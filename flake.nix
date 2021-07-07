@@ -1,30 +1,30 @@
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-20.03";
-
-  outputs = { self, nixpkgs }: {
-
-    nixosConfigurations.container = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules =
-        [ ({ pkgs, ... }: {
-            boot.isContainer = true;
-
-            # Let 'nixos-version --json' know about the Git revision
-            # of this flake.
-            system.configurationRevision = nixpkgs.lib.mkIf (self ? rev) self.rev;
-
-            # Network configuration.
-            networking.useDHCP = false;
-            networking.firewall.allowedTCPPorts = [ 80 ];
-
-            # Enable a web server.
-            services.httpd = {
-              enable = true;
-              adminAddr = "morty@example.org";
-            };
-          })
-        ];
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
+  };
 
+  outputs = { self, nixpkgs, home-manager, ... }: 
+  let
+    pkgs = import nixpkgs {
+      config = { allowUnfree = true; };
+    };
+  in
+  {
+    nixosConfigurations.porthos = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        ./configuration.nix
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.users.chris = ./home.nix;
+        }
+      ];
+    };
   };
 }
