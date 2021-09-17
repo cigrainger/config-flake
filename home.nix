@@ -105,6 +105,9 @@
         nodePackages.yaml-language-server
         rnix-lsp
         sumneko-lua-language-server
+        fzf
+        ripgrep
+        elixir_ls
       ];
       plugins = with pkgs.vimPlugins; [
         dracula-vim
@@ -112,7 +115,6 @@
         formatter-nvim
         friendly-snippets
         gitsigns-nvim
-        lightspeed-nvim
         lsp-colors-nvim
         lsp_signature-nvim
         lualine-nvim
@@ -122,10 +124,10 @@
         nvim-treesitter
         nvim-web-devicons
         rust-tools-nvim
-        telescope-nvim
         todo-comments-nvim
         vim-commentary
         vim-dadbod
+        vim-fugitive
         vim-rooter
         vim-slime
         vim-speeddating
@@ -135,12 +137,19 @@
         vim-tmux-navigator
         vim-vsnip
         which-key-nvim
+        fzf-lsp-nvim
+        fzf-vim
+        vim-nix
+        vim-elixir
       ];
     };
 
     tmux = {
       enable = true;
       baseIndex = 1;
+      extraConfig = "
+        set -g default-terminal \"tmux-256color\"
+      ";
       clock24 = true;
       keyMode = "vi";
       plugins = with pkgs.tmuxPlugins; [

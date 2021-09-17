@@ -52,7 +52,7 @@ opt("o", "timeoutlen", 400) -- Time before giving up (and showing which-key)
 cmd "colorscheme dracula"
 
 -- vim-slime
-g.slime_target = "neovim"
+g.slime_target = "tmux"
 g.slime_python_ipython = 1
 
 -- Mappings
@@ -159,33 +159,18 @@ let g:vsnip_filetypes.elixir = ['elixir', 'html', 'css']
   true
 )
 
--- Telescope
-local telescope = require "telescope"
-local actions = require "telescope.actions"
-telescope.setup {
-  defaults = {
-    mappings = {
-      i = {
-        ["<esc>"] = actions.close
-      }
-    },
-  }
-}
+-- FZF
 
 mappings = {
   f = {
     name = "find",
-    f = {":Telescope find_files<CR>", "Files"},
-    h = {":Telescope help_tags<CR>", "Help"},
-    g = {":Telescope live_grep<CR>", "Lines"},
-    b = {":Telescope buffers<CR>", "Buffers"},
-    r = {":Telescope lsp_references<CR>", "References"},
-    d = {":Telescope lsp_workspace_diagnostics<CR>", "Diagnostics"},
-    z = {":Telescope current_buffer_fuzzy_find<CR>", "Current buffer fuzzy"},
-    s = {":Telescope lsp_document_symbols<CR>", "Document Symbols"},
-    ws = {":Telescope lsp_workspace_symbols<CR>", "Workspace Symbols"},
-    t = {":TodoTelescope<CR>", "TODO Comments"},
-    n = {":Telescope session-lens search_session<CR>", "Sessions"},
+    f = {":Files <CR>", "Files"},
+    h = {":Helptags <CR>", "Help"},
+    g = {":Rg <CR>", "Lines"},
+    b = {":Buffers <CR>", "Buffers"},
+    r = {":References <CR>", "References"},
+    d = {":Diagnostics <CR>", "Diagnostics"},
+    z = {":BLines <CR>", "Current buffer fuzzy"},
   }
 }
 wk.register(mappings, {prefix = "<leader>"})
@@ -229,111 +214,92 @@ wk.register(mappings, {prefix = "<leader>"})
 -- nvim-tree
 wk.register({["<C-n>"] = {":NvimTreeToggle<CR>", "Toggle tree"}}, {})
 
--- Formatting
-vim.api.nvim_exec(
-  [[
-augroup FormatAutogroup
-  autocmd!
-  autocmd BufWritePost *.js,*.rs,*.lua,*.ex,*.exs,*.tf FormatWrite
-augroup END
-]],
-  true
-)
-
 -- Treesitter
 local ts = require "nvim-treesitter.configs"
 ts.setup {ensure_installed = "maintained", highlight = {enable = true}}
 vim.cmd "autocmd BufRead,BufNewFile *.ex,*.exs,mix.lock set filetype=elixir"
 
-        require "compe".setup(
-          {
-            enabled = true,
-            autocomplete = true,
-            debug = false,
-            min_length = 1,
-            preselect = "enable",
-            throttle_time = 80,
-            source_timeout = 200,
-            incomplete_delay = 400,
-            max_abbr_width = 100,
-            max_kind_width = 100,
-            max_menu_width = 100,
-            documentation = true,
-            source = {
-              path = true,
-              buffer = true,
-              calc = true,
-              nvim_lsp = true,
-              nvim_lua = true,
-              vsnip = true
-            }
-          }
-        )
+require "compe".setup(
+  {
+    enabled = true,
+    autocomplete = true,
+    debug = false,
+    min_length = 1,
+    preselect = "enable",
+    throttle_time = 80,
+    source_timeout = 200,
+    incomplete_delay = 400,
+    max_abbr_width = 100,
+    max_kind_width = 100,
+    max_menu_width = 100,
+    documentation = true,
+    source = {
+      path = true,
+      buffer = true,
+      calc = true,
+      nvim_lsp = true,
+      nvim_lua = true,
+      vsnip = true
+    }
+  }
+)
 
-                require("formatter").setup(
-          {
-            logging = false,
-            filetype = {
-              javascript = {
-                -- prettier
-                function()
-                  return {
-                    exe = "prettier",
-                    args = {"--stdin-filepath", vim.api.nvim_buf_get_name(0), "--single-quote"},
-                    stdin = true
-                  }
-                end
-              },
-              rust = {
-                -- Rustfmt
-                function()
-                  return {
-                    exe = "rustfmt",
-                    args = {"--emit=stdout"},
-                    stdin = true
-                  }
-                end
-              },
-              lua = {
-                -- luafmt
-                function()
-                  return {
-                    exe = "luafmt",
-                    args = {"--indent-count", 2, "--stdin"},
-                    stdin = true
-                  }
-                end
-              },
-              elixir = {
-                function()
-                  return {
-                    exe = "mix format",
-                    args = {},
-                    stdin = false
-                  }
-                end
-              },
-              terraform = {
-                function()
-                  return {
-                    exe = "terraform fmt",
-                    args = {"-write=true", "-list=false"},
-                    stdin = false
-                  }
-                end
-              }
-            }
-          }
-        )
-        require("which-key").setup {}
-        require("todo-comments").setup {}
-        require("gitsigns").setup()
-               require("lualine").setup(
-          {
-            options = {theme = "dracula"}
-          }
-        )
+require("which-key").setup {}
+require("todo-comments").setup {}
+require("gitsigns").setup()
+require("lualine").setup(
+  {
+    options = {theme = "dracula"}
+  }
+)
 
 -- LSP
 require "lsp"
 require("rust-tools").setup()
+
+require("formatter").setup(
+  {
+    logging = false,
+    filetype = {
+      javascript = {
+        -- prettier
+        function()
+          return {
+            exe = "prettier",
+            args = {"--stdin-filepath", vim.api.nvim_buf_get_name(0), "--single-quote"},
+            stdin = true
+          }
+        end
+      },
+      rust = {
+        -- Rustfmt
+        function()
+          return {
+            exe = "rustfmt",
+            args = {"--emit=stdout"},
+            stdin = true
+          }
+        end
+      },
+      lua = {
+        -- luafmt
+        function()
+          return {
+            exe = "luafmt",
+            args = {"--indent-count", 2, "--stdin"},
+            stdin = true
+          }
+        end
+      },
+      terraform = {
+        function()
+          return {
+            exe = "terraform fmt",
+            args = {"-write=true", "-list=false"},
+            stdin = false
+          }
+        end
+      }
+    }
+  }
+)

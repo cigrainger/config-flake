@@ -7,24 +7,34 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }: 
-  let
-    pkgs = import nixpkgs {
-      config = { allowUnfree = true; };
+  outputs = { self, nixpkgs, home-manager, ... }:
+    let
+      pkgs = import nixpkgs {
+        system = "x64_64-linux";
+        config = {
+          allowUnfree = true;
+          cudaSupport = true;
+        };
+      };
+    in {
+      nixosConfigurations.porthos = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          {
+            environment.etc.nixpkgs.source = nixpkgs;
+            nix.nixPath = [
+              "nixpkgs=${nixpkgs}"
+            ];
+          }
+          ./configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            nixpkgs.config = { allowUnfree = true; };
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.chris = ./home.nix;
+          }
+        ];
+      };
     };
-  in
-  {
-    nixosConfigurations.porthos = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [
-        ./configuration.nix
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.users.chris = ./home.nix;
-        }
-      ];
-    };
-  };
 }

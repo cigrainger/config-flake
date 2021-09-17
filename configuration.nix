@@ -5,6 +5,8 @@
     ./hardware-configuration.nix
   ];
 
+  systemd.enableUnifiedCgroupHierarchy = false;
+
   nixpkgs.config.allowUnfree = true;
 
   nix = {
@@ -14,23 +16,20 @@
     '';
   };
 
-  # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "porthos";
 
-  # Set your time zone.
   time.timeZone = "Australia/Melbourne";
 
-  # The global useDHCP flag is deprecated, therefore explicitly set to false here.
-  # Per-interface useDHCP will be mandatory in the future, so this generated config
-  # replicates the default behaviour.
   networking = {
     useDHCP = false;
     interfaces.enp5s0.useDHCP = true;
     interfaces.enp6s0.useDHCP = true;
     interfaces.wlp7s0.useDHCP = true;
+    nameservers = [ "1.1.1.1" "1.0.0.1" ];
+    # firewall.allowedTCPPorts = [ 8080 8888 ];
   };
 
   users = {
@@ -39,7 +38,7 @@
       isNormalUser = true;
       home = "/home/chris";
       description = "Christopher Grainger";
-      extraGroups = [ "wheel" ];
+      extraGroups = [ "wheel" "docker" ];
       shell = pkgs.zsh;
       hashedPassword =
         "$6$RkxvMra2G8J0$RDJzuC2A9gd3xybyVIqPf2WAgY.ptEmXggKd5HSC7YfXuOb84yfdlIkDKTdEgCod1.zhXFUqwitisr8./v9ZI.";
@@ -50,17 +49,9 @@
     };
   };
 
-  environment.systemPackages = with pkgs; [ neovim git ];
+  environment.systemPackages = with pkgs; [ neovim git ddcutil ];
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
+  hardware.video.hidpi.enable = true;
 
   # Enable the OpenSSH daemon.
   services = {
@@ -68,18 +59,47 @@
       enable = true;
       passwordAuthentication = false;
     };
-    xserver.videoDrivers = [ "nvidia" ];
+    xserver = {
+      videoDrivers = [ "nvidia" ];
+      enable = true;
+
+    desktopManager = {
+      xterm.enable = false;
+    };
+   
+    displayManager = {
+        defaultSession = "none+i3";
+    };
+
+    windowManager.i3 = {
+      enable = true;
+      extraPackages = with pkgs; [
+        dmenu #application launcher most people use
+        i3status # gives you the default i3 status bar
+        i3lock #default i3 screen locker
+        i3blocks #if you are planning on using i3blocks over i3status
+     ];
+    };
+    };
   };
 
   programs.mosh.enable = true;
 
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  hardware.opengl = {
+    enable = true;
+    driSupport32Bit = true;
+  };
 
-  hardware.opengl.enable = true;
+  virtualisation.docker = {
+    enable = true;
+    enableNvidia = true;
+  };
+
+  powerManagement.enable = false;
+  systemd.targets.sleep.enable = false;
+  systemd.targets.suspend.enable = false;
+  systemd.targets.hibernate.enable = false;
+  systemd.targets.hybrid-sleep.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
