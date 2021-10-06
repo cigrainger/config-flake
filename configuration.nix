@@ -1,13 +1,13 @@
 { config, pkgs, lib, modulesPath, inputs, ... }:
 
 {
-  imports = [
-    ./hardware-configuration.nix
-  ];
-
-  systemd.enableUnifiedCgroupHierarchy = false;
+  imports = [ ./hardware-configuration.nix ];
 
   nixpkgs.config.allowUnfree = true;
+
+  hardware.nvidia.modesetting.enable = true;
+  hardware.pulseaudio.enable = false;
+  hardware.bluetooth.enable = true;
 
   nix = {
     package = pkgs.nixUnstable;
@@ -19,7 +19,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "porthos";
+  networking.hostName = "athos";
 
   time.timeZone = "Australia/Melbourne";
 
@@ -32,13 +32,15 @@
     # firewall.allowedTCPPorts = [ 8080 8888 ];
   };
 
+  security.rtkit.enable = true;
+
   users = {
     mutableUsers = false;
     users.chris = {
       isNormalUser = true;
       home = "/home/chris";
       description = "Christopher Grainger";
-      extraGroups = [ "wheel" "docker" ];
+      extraGroups = [ "wheel" ];
       shell = pkgs.zsh;
       hashedPassword =
         "$6$RkxvMra2G8J0$RDJzuC2A9gd3xybyVIqPf2WAgY.ptEmXggKd5HSC7YfXuOb84yfdlIkDKTdEgCod1.zhXFUqwitisr8./v9ZI.";
@@ -49,12 +51,22 @@
     };
   };
 
-  environment.systemPackages = with pkgs; [ neovim git ddcutil ];
+  environment.systemPackages = with pkgs; [ neovim git ];
+
+  fonts.fonts = with pkgs; [
+    noto-fonts
+    noto-fonts-emoji
+    liberation_ttf
+    nerdfonts
+    google-fonts
+  ];
 
   hardware.video.hidpi.enable = true;
 
   # Enable the OpenSSH daemon.
   services = {
+    redis.enable = true;
+    printing.enable = true;
     openssh = {
       enable = true;
       passwordAuthentication = false;
@@ -63,43 +75,28 @@
       videoDrivers = [ "nvidia" ];
       enable = true;
 
-    desktopManager = {
-      xterm.enable = false;
-    };
-   
-    displayManager = {
-        defaultSession = "none+i3";
-    };
+      desktopManager = { gnome.enable = true; };
 
-    windowManager.i3 = {
+      displayManager = {
+        gdm = {
+          enable = true;
+          nvidiaWayland = true;
+        };
+      };
+    };
+    pipewire = {
       enable = true;
-      extraPackages = with pkgs; [
-        dmenu #application launcher most people use
-        i3status # gives you the default i3 status bar
-        i3lock #default i3 screen locker
-        i3blocks #if you are planning on using i3blocks over i3status
-     ];
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
     };
-    };
+    pcscd.enable = true;
+    udev.packages = [ pkgs.yubikey-personalization ];
   };
 
   programs.mosh.enable = true;
 
-  hardware.opengl = {
-    enable = true;
-    driSupport32Bit = true;
-  };
-
-  virtualisation.docker = {
-    enable = true;
-    enableNvidia = true;
-  };
-
-  powerManagement.enable = false;
-  systemd.targets.sleep.enable = false;
-  systemd.targets.suspend.enable = false;
-  systemd.targets.hibernate.enable = false;
-  systemd.targets.hybrid-sleep.enable = false;
+  hardware.opengl = { enable = true; };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

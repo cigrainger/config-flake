@@ -49,6 +49,8 @@ opt("w", "list", true) -- Show some invisible characters (tabs...)
 opt("w", "number", true) -- Print line number
 opt("o", "timeoutlen", 400) -- Time before giving up (and showing which-key)
 
+g.term = "screen-256color"
+
 cmd "colorscheme dracula"
 
 -- vim-slime

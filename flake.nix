@@ -17,7 +17,7 @@
         };
       };
     in {
-      nixosConfigurations.porthos = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.athos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           {
