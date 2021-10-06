@@ -301,7 +301,22 @@ require("formatter").setup(
             stdin = false
           }
         end
+      },
+      elixir = {
+        function()
+          return {
+            exe = "mix format",
+            stdin = false
+          }
+  end
       }
     }
   }
 )
+
+vim.api.nvim_exec([[
+augroup FormatAutogroup
+  autocmd!
+  autocmd BufWritePost *.js,*.rs,*.lua,*.ex,*.exs,*.tf FormatWrite
+augroup END
+]], true)
