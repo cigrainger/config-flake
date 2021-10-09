@@ -302,6 +302,14 @@ require("formatter").setup(
           }
         end
       },
+      nix = {
+        function()
+          return {
+            exe = "nixfmt",
+            stdin = true
+          }
+  end
+      },
       elixir = {
         function()
           return {
@@ -317,6 +325,6 @@ require("formatter").setup(
 vim.api.nvim_exec([[
 augroup FormatAutogroup
   autocmd!
-  autocmd BufWritePost *.js,*.rs,*.lua,*.ex,*.exs,*.tf FormatWrite
+  autocmd BufWritePost *.js,*.rs,*.lua,*.ex,*.exs,*.tf,*.nix FormatWrite
 augroup END
 ]], true)

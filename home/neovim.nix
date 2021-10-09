@@ -21,6 +21,7 @@
         fzf
         ripgrep
         elixir_ls
+        nixfmt
       ];
       plugins = with pkgs.vimPlugins; [
         dracula-vim
