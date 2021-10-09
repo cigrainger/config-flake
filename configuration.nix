@@ -76,8 +76,8 @@
 
   # Enable the OpenSSH daemon.
   services = {
-    gnome3.gnome-keyring.enable = true;
     redis.enable = true;
+
     printing = {
       enable = true;
       drivers = with pkgs; [
@@ -88,28 +88,34 @@
         brgenml1cupswrapper
       ];
     };
+
     openssh = {
       enable = true;
       passwordAuthentication = false;
     };
+
     xserver = {
       enable = true;
 
-      dpi = 144;
-      libinput.enable = true;
-      videoDrivers = [ "nvidia" ];
+      desktopManager.gnome.enable = true;
+
       displayManager = {
-        gdm.enable = true;
-        defaultSession = "none+i3";
+        gdm = {
+          enable = true;
+          nvidiaWayland = true;
+        };
       };
-      windowManager.i3.enable = true;
+
+      videoDrivers = [ "nvidia" ];
     };
+
     pipewire = {
       enable = true;
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
     };
+
     pcscd.enable = true;
     udev.packages = [ pkgs.yubikey-personalization ];
   };

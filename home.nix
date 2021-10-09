@@ -1,20 +1,21 @@
 { pkgs, ... }:
 
 {
-  imports = [ ./home/i3.nix ./home/neovim.nix ];
+  imports = [ ./home/neovim.nix ];
 
   home.packages = with pkgs; [
     _1password-gui
     authy
-    alacritty
     aws-vault
     awscli2
     bottom
     brave
-    dmenu
     fd
-    firefox
+    firefox-wayland
+    geekbench
     gh
+    gnome.gnome-tweaks
+    gnomeExtensions.screenshot-tool
     hfsprogs
     mailspring
     neofetch
@@ -25,7 +26,6 @@
     slack
     spotify
     spotify-tui
-    sxhkd
     transmission-gtk
     yubikey-manager
     zoom-us
@@ -149,6 +149,7 @@
         } + "/Dracula.tmTheme");
       };
     };
+
 
     tmux = {
       enable = true;
