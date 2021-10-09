@@ -64,7 +64,22 @@
     };
   };
 
-  environment.systemPackages = with pkgs; [ neovim git ];
+  environment = {
+    systemPackages = with pkgs; [ neovim git ];
+    gnome.excludePackages = with pkgs.gnome; [
+      baobab
+      cheese
+      eog
+      epiphany
+      gedit
+      simple-scan
+      totem
+      yelp
+      geary
+      gnome-maps
+      gnome-music
+    ];
+  };
 
   fonts.fonts = with pkgs; [
     noto-fonts
