@@ -5,9 +5,16 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  hardware.nvidia.modesetting.enable = true;
-  hardware.pulseaudio.enable = false;
-  hardware.bluetooth.enable = true;
+  hardware = {
+    nvidia.modesetting.enable = true;
+    pulseaudio.enable = false;
+    bluetooth.enable = true;
+    video.hidpi.enable = true;
+    opengl = {
+      enable = true;
+      driSupport = true;
+    };
+  };
 
   nix = {
     package = pkgs.nixUnstable;
@@ -16,18 +23,24 @@
     '';
   };
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot = {
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
 
-  networking.hostName = "athos";
+    plymouth.enable = true;
+    kernelPackages = pkgs.linuxPackages_latest;
+  };
 
   time.timeZone = "Australia/Melbourne";
 
   networking = {
+    hostName = "athos";
     useDHCP = false;
-    interfaces.enp5s0.useDHCP = true;
-    interfaces.enp6s0.useDHCP = true;
-    interfaces.wlp7s0.useDHCP = true;
+    interfaces.enp59s0.useDHCP = true;
+    interfaces.enp60s0.useDHCP = true;
+    interfaces.wlp58s0.useDHCP = true;
     nameservers = [ "1.1.1.1" "1.0.0.1" ];
     # firewall.allowedTCPPorts = [ 8080 8888 ];
   };
@@ -61,28 +74,35 @@
     google-fonts
   ];
 
-  hardware.video.hidpi.enable = true;
-
   # Enable the OpenSSH daemon.
   services = {
+    gnome3.gnome-keyring.enable = true;
     redis.enable = true;
-    printing.enable = true;
+    printing = {
+      enable = true;
+      drivers = with pkgs; [
+        gutenprint
+        gutenprintBin
+        brlaser
+        brgenml1lpr
+        brgenml1cupswrapper
+      ];
+    };
     openssh = {
       enable = true;
       passwordAuthentication = false;
     };
     xserver = {
-      videoDrivers = [ "nvidia" ];
       enable = true;
 
-      desktopManager = { gnome.enable = true; };
-
+      dpi = 144;
+      libinput.enable = true;
+      videoDrivers = [ "nvidia" ];
       displayManager = {
-        gdm = {
-          enable = true;
-          nvidiaWayland = true;
-        };
+        gdm.enable = true;
+        defaultSession = "none+i3";
       };
+      windowManager.i3.enable = true;
     };
     pipewire = {
       enable = true;
@@ -95,8 +115,6 @@
   };
 
   programs.mosh.enable = true;
-
-  hardware.opengl = { enable = true; };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

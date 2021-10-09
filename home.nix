@@ -1,18 +1,20 @@
 { pkgs, ... }:
 
 {
-  imports = [ ./home/neovim.nix ];
+  imports = [ ./home/i3.nix ./home/neovim.nix ];
 
   home.packages = with pkgs; [
     _1password-gui
+    authy
+    alacritty
     aws-vault
     awscli2
     bottom
     brave
+    dmenu
     fd
-    firefox-devedition-bin
+    firefox
     gh
-    gnome.gnome-tweaks
     hfsprogs
     mailspring
     neofetch
@@ -23,13 +25,16 @@
     slack
     spotify
     spotify-tui
+    sxhkd
+    transmission-gtk
     yubikey-manager
+    zoom-us
   ];
 
   gtk = {
     enable = true;
     theme = {
-      name = "Orchis";
+      name = "Orchis-dark";
       package = pkgs.orchis-theme;
     };
     iconTheme = {
@@ -107,12 +112,12 @@
 
     zsh = {
       enable = true;
+      enableAutosuggestions = true;
       enableSyntaxHighlighting = true;
       enableVteIntegration = true;
       defaultKeymap = "viins";
-      sessionVariables = {
-        AWS_VAULT_PROMPT = "ykman";
-      };
+      sessionVariables = { AWS_VAULT_PROMPT = "ykman"; };
+      shellAliases = { bat = "cat"; };
       zplug = {
         enable = true;
         plugins = [
@@ -134,9 +139,16 @@
 
     bat = {
       enable = true;
-      config = { theme = "Dracula"; };
+      config = { theme = "dracula"; };
+      themes = {
+        dracula = builtins.readFile (pkgs.fetchFromGitHub {
+          owner = "dracula";
+          repo = "sublime"; # Bat uses sublime syntax for its themes
+          rev = "26c57ec282abcaa76e57e055f38432bd827ac34e";
+          sha256 = "019hfl4zbn4vm4154hh3bwk6hm7bdxbr1hdww83nabxwjn99ndhv";
+        } + "/Dracula.tmTheme");
+      };
     };
-
 
     tmux = {
       enable = true;
