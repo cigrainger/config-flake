@@ -34,6 +34,10 @@
 
   gtk = {
     enable = true;
+    font = {
+      name = "Overpass Regular";
+      size = 11;
+    };
     theme = {
       name = "Orchis-dark";
       package = pkgs.orchis-theme;
