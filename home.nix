@@ -10,6 +10,7 @@
     awscli2
     bottom
     brave
+    discord
     fd
     firefox-wayland
     geekbench
