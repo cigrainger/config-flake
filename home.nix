@@ -50,7 +50,6 @@
   };
 
   programs = {
-    alacritty.enable = true;
     lazygit.enable = true;
     gpg.enable = true;
     password-store.enable = true;
