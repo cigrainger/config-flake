@@ -111,17 +111,17 @@
 
     xserver = {
       enable = true;
-
-      desktopManager.gnome.enable = true;
-
-      displayManager = {
-        gdm = {
-          enable = true;
-          nvidiaWayland = true;
-        };
-      };
-
+      libinput.enable = true;
       videoDrivers = [ "nvidia" ];
+      displayManager = {
+        startx.enable = true;
+        defaultSession = "none+bspwm";
+        session = [{
+          manage = "window";
+          name = "bspwm";
+          start = "";
+        }];
+      };
     };
 
     pipewire = {

@@ -11,12 +11,11 @@
     bottom
     brave
     discord
+    dmenu
     fd
     firefox-wayland
     geekbench
     gh
-    gnome.gnome-tweaks
-    gnomeExtensions.screenshot-tool
     hfsprogs
     mailspring
     neofetch
@@ -29,6 +28,7 @@
     spotify-tui
     transmission-gtk
     yubikey-manager
+    yubioath-desktop
     zoom-us
   ];
 
@@ -54,6 +54,7 @@
   };
 
   programs = {
+    alacritty.enable = true;
     lazygit.enable = true;
     gpg.enable = true;
     password-store.enable = true;
@@ -154,7 +155,6 @@
       };
     };
 
-
     tmux = {
       enable = true;
       baseIndex = 1;
@@ -180,10 +180,23 @@
         };
       };
     };
+
     gpg-agent = {
       enable = true;
       defaultCacheTtl = 3600;
       pinentryFlavor = "gnome3";
     };
+
+    sxhkd = {
+      enable = true;
+      keybindings = {
+        "super + Return" = "alacritty";
+        "super + @space" = "dmenu_run";
+        "super + alt + {q,r}" = "bspc {quit,wm -r}";
+      };
+    };
   };
+
+  xsession.enable = true;
+  xsession.windowManager.bspwm.enable = true;
 }
