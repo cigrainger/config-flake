@@ -4,6 +4,7 @@
   imports = [ ./hardware-configuration.nix ];
 
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.permittedInsecurePackages = [ "electron-9.4.4" ];
 
   hardware = {
     nvidia.modesetting.enable = true;
@@ -42,7 +43,10 @@
     interfaces.enp60s0.useDHCP = true;
     interfaces.wlp58s0.useDHCP = true;
     nameservers = [ "1.1.1.1" "1.0.0.1" ];
-    # firewall.allowedTCPPorts = [ 8080 8888 ];
+    wireless = {
+      enable = true;
+      userControlled = { enable = true; };
+    };
   };
 
   security.rtkit.enable = true;
@@ -104,6 +108,8 @@
       ];
     };
 
+    gnome.gnome-keyring.enable = true;
+
     openssh = {
       enable = true;
       passwordAuthentication = false;
@@ -111,10 +117,35 @@
 
     xserver = {
       enable = true;
-      libinput.enable = true;
+      dpi = 144;
+      libinput = {
+        enable = true;
+        touchpad = {
+          tapping = false;
+          naturalScrolling = true;
+        };
+      };
       videoDrivers = [ "nvidia" ];
       displayManager = {
-        startx.enable = true;
+        lightdm = {
+          enable = true;
+          background = ./wallpaper.png;
+          greeters.mini = {
+            enable = true;
+            user = "chris";
+            extraConfig = ''
+              [greeter]
+              show-password-label = false
+              password-alignment = left
+              [greeter-theme]
+              font = Overpass
+              window-color = "#ff79c6"
+              border-color = "#44475a"
+              password-background-color = "#282a36"
+              password-color = "#50fa7b"
+            '';
+          };
+        };
         defaultSession = "none+bspwm";
         session = [{
           manage = "window";
@@ -135,7 +166,18 @@
     udev.packages = [ pkgs.yubikey-personalization ];
   };
 
-  programs.mosh.enable = true;
+  programs = {
+    dconf.enable = true;
+    mosh.enable = true;
+  };
+
+  virtualisation = {
+    podman = {
+      enable = true;
+      dockerCompat = true;
+      enableNvidia = true;
+    };
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

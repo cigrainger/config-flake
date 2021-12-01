@@ -1,94 +1,67 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
-  imports = [ ./home/neovim.nix ];
+  imports = [
+    ./home/alacritty.nix
+    ./home/bspwm.nix
+    ./home/direnv.nix
+    ./home/neovim.nix
+    ./home/polybar.nix
+    ./home/rofi.nix
+    ./home/shell.nix
+    ./home/sxhkd.nix
+  ];
 
   home.packages = with pkgs; [
     _1password-gui
     authy
     aws-vault
     awscli2
+    bats
     bottom
     brave
+    calibre
     discord
-    dmenu
+    exercism
     fd
-    firefox-wayland
-    geekbench
+    firefox
     gh
+    gnome.seahorse
     hfsprogs
+    libreoffice
     mailspring
     neofetch
     nixfmt
     ripgrep
+    scrot
     signal-cli
     signal-desktop
     slack
     spotify
     spotify-tui
     transmission-gtk
+    wezterm
     yubikey-manager
     yubioath-desktop
-    zoom-us
   ];
 
-  gtk = {
-    enable = true;
-    font = {
-      name = "Overpass Regular";
-      size = 11;
-    };
-    theme = {
-      name = "Orchis-dark";
-      package = pkgs.orchis-theme;
-    };
-    iconTheme = {
-      name = "Tela";
-      package = pkgs.tela-icon-theme;
-    };
-  };
-
-  xdg.configFile."nvim/lua" = {
-    source = ./configs/nvim/lua;
-    recursive = true;
-  };
+  xdg.configFile."dunst/dunstrc".source = ./configs/dunst/dunstrc;
+  xdg.configFile."wezterm/wezterm.lua".source = ./configs/wezterm/wezterm.lua;
 
   programs = {
-    alacritty.enable = true;
+    nnn = {
+      enable = true;
+      package = pkgs.nnn.override ({ withNerdIcons = true; });
+    };
+
     lazygit.enable = true;
     gpg.enable = true;
     password-store.enable = true;
+    feh.enable = true;
 
     exa = {
       enable = true;
       enableAliases = true;
-    };
-
-    direnv = {
-      enable = true;
-      enableZshIntegration = true;
-      nix-direnv = {
-        enable = true;
-        enableFlakes = true;
-      };
-      stdlib = ''
-        layout_poetry() {
-          if [[ ! -f pyproject.toml ]]; then
-            log_error 'No pyproject.toml found. Use `poetry new` or `poetry init` to create one first.'
-            exit 2
-          fi
-
-          local VENV=$(poetry env list --full-path | cut -d' ' -f1)
-          if [[ -z $VENV || ! -d $VENV/bin ]]; then
-            log_error 'No poetry virtual environment found. Use `poetry install` to create one first.'
-            exit 2
-          fi
-
-          export VIRTUAL_ENV=$VENV
-          export POETRY_ACTIVE=1
-          PATH_add "$VENV/bin"
-        }
-      '';
     };
 
     git = {
@@ -115,36 +88,9 @@
       historyWidgetOptions = [ "--sort" "--exact" ];
     };
 
-    zsh = {
-      enable = true;
-      enableAutosuggestions = true;
-      enableSyntaxHighlighting = true;
-      enableVteIntegration = true;
-      defaultKeymap = "viins";
-      sessionVariables = { AWS_VAULT_PROMPT = "ykman"; };
-      shellAliases = { bat = "cat"; };
-      zplug = {
-        enable = true;
-        plugins = [
-          {
-            name = "plugins/git";
-            tags = [ "from:oh-my-zsh" ];
-          }
-          {
-            name = "mafredri/zsh-async";
-            tags = [ "from:github" ];
-          }
-          {
-            name = "spaceship-prompt/spaceship-prompt";
-            tags = [ "from:github" "use:spaceship.zsh" "as:theme" ];
-          }
-        ];
-      };
-    };
-
     bat = {
       enable = true;
-      config = { theme = "dracula"; };
+      config = { theme = "Dracula"; };
       themes = {
         dracula = builtins.readFile (pkgs.fetchFromGitHub {
           owner = "dracula";
@@ -159,16 +105,33 @@
       enable = true;
       baseIndex = 1;
       extraConfig = ''
-        set -g default-terminal "tmux-256color"
-        set -ga terminal-overrides ",xterm-256color:Tc"
+        set  -g default-terminal "tmux-256color"
+        set -ag terminal-overrides ",alacritty:RGB"
       '';
       clock24 = true;
       keyMode = "vi";
       plugins = with pkgs.tmuxPlugins; [ dracula vim-tmux-navigator ];
     };
+
+    zathura.enable = true;
   };
 
   services = {
+    dunst.enable = true;
+
+    gpg-agent = {
+      enable = true;
+      defaultCacheTtl = 3600;
+      pinentryFlavor = "gnome3";
+    };
+
+    picom = {
+      enable = true;
+      inactiveDim = "0.2";
+      inactiveOpacity = "0.9";
+      vSync = true;
+    };
+
     spotifyd = {
       enable = true;
       package = (pkgs.spotifyd.override { withKeyring = true; });
@@ -180,23 +143,5 @@
         };
       };
     };
-
-    gpg-agent = {
-      enable = true;
-      defaultCacheTtl = 3600;
-      pinentryFlavor = "gnome3";
-    };
-
-    sxhkd = {
-      enable = true;
-      keybindings = {
-        "super + Return" = "alacritty";
-        "super + @space" = "dmenu_run";
-        "super + alt + {q,r}" = "bspc {quit,wm -r}";
-      };
-    };
   };
-
-  xsession.enable = true;
-  xsession.windowManager.bspwm.enable = true;
 }

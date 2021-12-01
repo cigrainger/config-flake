@@ -59,13 +59,25 @@ local on_attach = function()
   wk.register(mappings, {prefix = "<leader>"})
 end
 
+local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
+
 local function setup_servers()
-  local servers = { "pyright", "sumneko_lua", "rnix" }
+  local servers = {"pyright", "sumneko_lua", "rnix", "elixirls", "zls"}
   for _, server in pairs(servers) do
     if server == "sumneko_lua" then
-      lspconfig[server].setup {on_attach = on_attach, settings = {Lua = {diagnostics = {globals = {"vim"}}}}}
+      lspconfig[server].setup {
+        on_attach = on_attach,
+        settings = {Lua = {diagnostics = {globals = {"vim"}}}},
+        capabilities = capabilities
+      }
+    elseif server == "elixirls" then
+      lspconfig[server].setup {
+        on_attach = on_attach,
+        cmd = {"/nix/store/8522hswapzsiggiy8zssj6h66pg5pax8-elixir-ls-0.8.1/lib/language_server.sh"},
+        capabilities = capabilities
+      }
     else
-      lspconfig[server].setup {on_attach = on_attach}
+      lspconfig[server].setup {on_attach = on_attach, capabilities = capabilities}
     end
   end
 end

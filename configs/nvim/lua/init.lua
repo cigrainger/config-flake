@@ -33,7 +33,7 @@ opt("b", "smartindent", true) -- Insert indents automatically
 opt("b", "undofile", true) -- Persist undo
 opt("b", "tabstop", indent) -- Number of spaces tabs count for
 opt("o", "incsearch", true) -- Turn on incremental search.
-opt("o", "completeopt", "menuone,noinsert,noselect") -- Completion options (for deoplete)
+opt("o", "completeopt", "menu,menuone,noselect") -- Completion options (for deoplete)
 opt("o", "hidden", true) -- Enable modified buffers in background
 opt("o", "ignorecase", true) -- Ignore case
 opt("o", "joinspaces", false) -- No double spaces with join after a dot
@@ -48,8 +48,6 @@ opt("o", "wildmode", "list:longest") -- Command-line completion mode
 opt("w", "list", true) -- Show some invisible characters (tabs...)
 opt("w", "number", true) -- Print line number
 opt("o", "timeoutlen", 400) -- Time before giving up (and showing which-key)
-
-g.term = "screen-256color"
 
 cmd "colorscheme dracula"
 
@@ -88,91 +86,32 @@ mappings = {
 }
 wk.register(mappings)
 
--- Completion menu tab nav
-local t = function(str)
-  return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
+-- Telescope
 
-local check_back_space = function()
-  local col = vim.fn.col(".") - 1
-  if col == 0 or vim.fn.getline("."):sub(col, col):match("%s") then
-    return true
-  else
-    return false
-  end
-end
+local actions = require("telescope.actions")
+local trouble = require("trouble.providers.telescope")
+local telescope = require("telescope")
 
--- Use (s-)tab to:
---- move to prev/next item in completion menuone
---- jump to prev/next snippet's placeholder
-_G.tab_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-n>"
-  elseif vim.fn.call("vsnip#available", {1}) == 1 then
-    return t "<Plug>(vsnip-expand-or-jump)"
-  elseif check_back_space() then
-    return t "<Tab>"
-  else
-    return vim.fn["compe#complete"]()
-  end
-end
-_G.s_tab_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-p>"
-  elseif vim.fn.call("vsnip#jumpable", {-1}) == 1 then
-    return t "<Plug>(vsnip-jump-prev)"
-  else
-    -- If <S-Tab> is not working in your terminal, change it to <C-h>
-    return t "<S-Tab>"
-  end
-end
+telescope.setup {
+  defaults = {
+    mappings = {
+      i = {["<c-t>"] = trouble.open_with_trouble},
+      n = {["<c-t>"] = trouble.open_with_trouble}
+    }
+  }
+}
 
-vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<C-Space>", "compe#complete()", {silent = true, expr = true})
-vim.api.nvim_set_keymap("i", "<CR>", "compe#confirm('<CR>')", {silent = true, expr = true})
-vim.api.nvim_set_keymap("i", "<C-e>", "compe#close('C-e')", {silent = true, expr = true})
-vim.api.nvim_set_keymap("i", "<C-f>", "compe#scroll({ 'delta': +4 })", {silent = true, expr = true})
-vim.api.nvim_set_keymap("i", "<C-d>", "compe#scroll({ 'delta': -4 })", {silent = true, expr = true})
-vim.api.nvim_exec(
-  [[
-" NOTE: You can use other key to expand snippet.
-
-" Expand
-imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
-smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
-
-" Expand or jump
-imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
-smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
-
-" Select or cut text to use as $TM_SELECTED_TEXT in the next snippet.
-" See https://github.com/hrsh7th/vim-vsnip/pull/50
-nmap        s   <Plug>(vsnip-select-text)
-xmap        s   <Plug>(vsnip-select-text)
-nmap        S   <Plug>(vsnip-cut-text)
-xmap        S   <Plug>(vsnip-cut-text)
-
-let g:vsnip_filetypes = {}
-let g:vsnip_filetypes.elixir = ['elixir', 'html', 'css']
-]],
-  true
-)
-
--- FZF
+require("telescope").load_extension("fzf")
 
 mappings = {
   f = {
     name = "find",
-    f = {":Files <CR>", "Files"},
-    h = {":Helptags <CR>", "Help"},
-    g = {":Rg <CR>", "Lines"},
-    b = {":Buffers <CR>", "Buffers"},
-    r = {":References <CR>", "References"},
-    d = {":Diagnostics <CR>", "Diagnostics"},
-    z = {":BLines <CR>", "Current buffer fuzzy"},
+    f = {":Telescope find_files<CR>", "Files"},
+    h = {":Telescope help_tags<CR>", "Help"},
+    g = {":Telescope live_grep<CR>", "Lines"},
+    b = {":Telescope buffers<CR>", "Buffers"},
+    r = {":Telescope lsp_references<CR>", "References"},
+    d = {":Telescope lsp_workspace_diagnostics<CR>", "Diagnostics"}
   }
 }
 wk.register(mappings, {prefix = "<leader>"})
@@ -213,38 +152,10 @@ mappings = {
 }
 wk.register(mappings, {prefix = "<leader>"})
 
--- nvim-tree
-wk.register({["<C-n>"] = {":NvimTreeToggle<CR>", "Toggle tree"}}, {})
-
 -- Treesitter
 local ts = require "nvim-treesitter.configs"
 ts.setup {ensure_installed = "maintained", highlight = {enable = true}}
 vim.cmd "autocmd BufRead,BufNewFile *.ex,*.exs,mix.lock set filetype=elixir"
-
-require "compe".setup(
-  {
-    enabled = true,
-    autocomplete = true,
-    debug = false,
-    min_length = 1,
-    preselect = "enable",
-    throttle_time = 80,
-    source_timeout = 200,
-    incomplete_delay = 400,
-    max_abbr_width = 100,
-    max_kind_width = 100,
-    max_menu_width = 100,
-    documentation = true,
-    source = {
-      path = true,
-      buffer = true,
-      calc = true,
-      nvim_lsp = true,
-      nvim_lua = true,
-      vsnip = true
-    }
-  }
-)
 
 require("which-key").setup {}
 require("todo-comments").setup {}
@@ -308,7 +219,7 @@ require("formatter").setup(
             exe = "nixfmt",
             stdin = true
           }
-  end
+        end
       },
       elixir = {
         function()
@@ -316,15 +227,117 @@ require("formatter").setup(
             exe = "mix format",
             stdin = false
           }
-  end
+        end
       }
     }
   }
 )
 
-vim.api.nvim_exec([[
+vim.api.nvim_exec(
+  [[
 augroup FormatAutogroup
   autocmd!
   autocmd BufWritePost *.js,*.rs,*.lua,*.ex,*.exs,*.tf,*.nix FormatWrite
 augroup END
-]], true)
+]],
+  true
+)
+
+-- nvim-tree
+require("nvim-tree").setup()
+wk.register(
+  {
+    ["<C-n>"] = {":NvimTreeToggle<CR>", "Toggle tree"},
+    ["<leader>nr"] = {":NvimTreeRefresh<CR>", "Refresh tree"},
+    ["<leader>nn"] = {":NvimTreeFindFile<CR>", "Find file"}
+  },
+  {}
+)
+
+-- Octo
+require("octo").setup()
+
+-- Git blamer
+g.blamer_enabled = 1
+g.blamer_delay = 500
+
+-- trouble
+mappings = {
+  x = {
+    name = "trouble",
+    x = {":TroubleToggle<CR>", "Main"},
+    w = {":TroubleToggle lsp_workspace_diagnostics<CR>", "Workspace Diagnostics"},
+    d = {":TroubleToggle lsp_document_diagnostics<CR>", "Document Diagnostics"},
+    q = {":TroubleToggle quickfix<CR>", "Quickfix"},
+    l = {":TroubleToggle loclist<CR>", "Location List"}
+  }
+}
+wk.register(mappings, {prefix = "<leader>"})
+
+-- cmp
+local cmp = require "cmp"
+cmp.setup(
+  {
+    snippet = {
+      -- REQUIRED - you must specify a snippet engine
+      expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+        -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+        -- require'snippy'.expand_snippet(args.body) -- For `snippy` users.
+      end
+    },
+    mapping = {
+      ["<C-d>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), {"i", "c"}),
+      ["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), {"i", "c"}),
+      ["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), {"i", "c"}),
+      ["<C-y>"] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
+      ["<C-e>"] = cmp.mapping(
+        {
+          i = cmp.mapping.abort(),
+          c = cmp.mapping.close()
+        }
+      ),
+      ["<Tab>"] = cmp.mapping(cmp.mapping.select_next_item(), {"i", "s"}),
+      ["<CR>"] = cmp.mapping.confirm({select = true})
+    },
+    sources = cmp.config.sources(
+      {
+        {name = "nvim_lsp"},
+        {name = "vsnip"}, -- For vsnip users.
+        -- { name = 'luasnip' }, -- For luasnip users.
+        -- { name = 'ultisnips' }, -- For ultisnips users.
+        -- { name = 'snippy' }, -- For snippy users.
+        {name = "path"}
+      },
+      {
+        {name = "buffer"}
+      }
+    )
+  }
+)
+
+-- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline(
+  "/",
+  {
+    sources = {
+      {name = "buffer"}
+    }
+  }
+)
+
+-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline(
+  ":",
+  {
+    sources = cmp.config.sources(
+      {
+        {name = "path"}
+      },
+      {
+        {name = "cmdline"}
+      }
+    )
+  }
+)
