@@ -108,7 +108,7 @@
       ];
     };
 
-    gnome.gnome-keyring.enable = true;
+    # gnome.gnome-keyring.enable = true;
 
     openssh = {
       enable = true;
@@ -117,42 +117,17 @@
 
     xserver = {
       enable = true;
-      dpi = 144;
-      libinput = {
-        enable = true;
-        touchpad = {
-          tapping = false;
-          naturalScrolling = true;
-        };
-      };
+      # dpi = 144;
+      # libinput = {
+      #   enable = true;
+      #   touchpad = {
+      #     tapping = false;
+      #     naturalScrolling = true;
+      #   };
+      # };
       videoDrivers = [ "nvidia" ];
-      displayManager = {
-        lightdm = {
-          enable = true;
-          background = ./wallpaper.png;
-          greeters.mini = {
-            enable = true;
-            user = "chris";
-            extraConfig = ''
-              [greeter]
-              show-password-label = false
-              password-alignment = left
-              [greeter-theme]
-              font = Overpass
-              window-color = "#ff79c6"
-              border-color = "#44475a"
-              password-background-color = "#282a36"
-              password-color = "#50fa7b"
-            '';
-          };
-        };
-        defaultSession = "none+bspwm";
-        session = [{
-          manage = "window";
-          name = "bspwm";
-          start = "";
-        }];
-      };
+      services.xserver.displayManager.gdm.enable = true;
+      services.xserver.desktopManager.gnome.enable = true;
     };
 
     pipewire = {

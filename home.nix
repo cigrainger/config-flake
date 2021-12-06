@@ -2,14 +2,14 @@
 
 {
   imports = [
-    ./home/alacritty.nix
-    ./home/bspwm.nix
+    # ./home/alacritty.nix
+    # ./home/bspwm.nix
     ./home/direnv.nix
     ./home/neovim.nix
-    ./home/polybar.nix
-    ./home/rofi.nix
+    # ./home/polybar.nix
+    # ./home/rofi.nix
     ./home/shell.nix
-    ./home/sxhkd.nix
+    # ./home/sxhkd.nix
   ];
 
   home.packages = with pkgs; [
@@ -26,7 +26,7 @@
     fd
     firefox
     gh
-    gnome.seahorse
+    # gnome.seahorse
     hfsprogs
     libreoffice
     mailspring
@@ -38,15 +38,15 @@
     signal-desktop
     slack
     spotify
-    spotify-tui
+    # spotify-tui
     transmission-gtk
     wezterm
     yubikey-manager
     yubioath-desktop
   ];
 
-  xdg.configFile."dunst/dunstrc".source = ./configs/dunst/dunstrc;
-  xdg.configFile."wezterm/wezterm.lua".source = ./configs/wezterm/wezterm.lua;
+  # xdg.configFile."dunst/dunstrc".source = ./configs/dunst/dunstrc;
+  # xdg.configFile."wezterm/wezterm.lua".source = ./configs/wezterm/wezterm.lua;
 
   programs = {
     nnn = {
@@ -57,7 +57,7 @@
     lazygit.enable = true;
     gpg.enable = true;
     password-store.enable = true;
-    feh.enable = true;
+    # feh.enable = true;
 
     exa = {
       enable = true;
@@ -69,11 +69,6 @@
       lfs.enable = true;
       userEmail = "chris@amplified.ai";
       userName = "Christopher Grainger";
-      extraConfig = {
-        credential.helper = "${
-            pkgs.git.override { withLibsecret = true; }
-          }/bin/git-credential-libsecret";
-      };
     };
 
     fzf = {
@@ -117,7 +112,7 @@
   };
 
   services = {
-    dunst.enable = true;
+    # dunst.enable = true;
 
     gpg-agent = {
       enable = true;
@@ -125,23 +120,11 @@
       pinentryFlavor = "gnome3";
     };
 
-    picom = {
-      enable = true;
-      inactiveDim = "0.2";
-      inactiveOpacity = "0.9";
-      vSync = true;
-    };
-
-    spotifyd = {
-      enable = true;
-      package = (pkgs.spotifyd.override { withKeyring = true; });
-      settings = {
-        global = {
-          username = "12169973823";
-          device_name = "nix";
-          use_keyring = true;
-        };
-      };
-    };
+    # picom = {
+    #   enable = true;
+    #   inactiveDim = "0.2";
+    #   inactiveOpacity = "0.9";
+    #   vSync = true;
+    # };
   };
 }
