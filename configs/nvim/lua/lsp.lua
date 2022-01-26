@@ -73,7 +73,7 @@ local function setup_servers()
     elseif server == "elixirls" then
       lspconfig[server].setup {
         on_attach = on_attach,
-        cmd = {"/nix/store/8522hswapzsiggiy8zssj6h66pg5pax8-elixir-ls-0.8.1/lib/language_server.sh"},
+        cmd = {"/etc/elixir-ls/language_server.sh"},
         capabilities = capabilities
       }
     else

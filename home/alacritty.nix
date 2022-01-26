@@ -6,22 +6,22 @@
     settings = {
       font = {
         normal = {
-          family = "BlexMono Nerd Font Mono";
+          family = "JetBrainsMono Nerd Font Mono";
           style = "Regular";
         };
         bold = {
-          family = "BlexMono Nerd Font Mono";
+          family = "JetBrainsMono Nerd Font Mono";
           style = "Bold";
         };
         italic = {
-          family = "BlexMono Nerd Font Mono";
+          family = "JetBrainsMono Nerd Font Mono";
           style = "Italic";
         };
         bold_italic = {
-          family = "BlexMono Nerd Font Mono";
+          family = "JetBrainsMono Nerd Font Mono";
           style = "Bold Italic";
         };
-        size = 8;
+        size = 10;
       };
       colors = {
         primary = {

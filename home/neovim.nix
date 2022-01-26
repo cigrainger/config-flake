@@ -16,12 +16,15 @@
     extraPackages = with pkgs; [
       elixir_ls
       fd
+      fzf
       gcc
       gh
       neovim-remote
       nixfmt
+      nodejs
       nodePackages.bash-language-server
       nodePackages.lua-fmt
+      nodePackages.prettier
       nodePackages.pyright
       nodePackages.typescript-language-server
       nodePackages.vscode-json-languageserver
@@ -29,6 +32,7 @@
       ripgrep
       rnix-lsp
       rustfmt
+      rust-analyzer
       sumneko-lua-language-server
       tree-sitter
       zls
@@ -54,6 +58,7 @@
         };
       };
     in with pkgs.vimPlugins; [
+      barbar-nvim
       blamer-nvim
       cmp-buffer
       cmp-nvim-lsp
@@ -80,6 +85,7 @@
       trouble-nvim
       vim-commentary
       vim-dadbod
+      vim-dadbod-ui
       vim-elixir
       vim-fugitive
       vim-nix
@@ -92,6 +98,7 @@
       vim-tmux-navigator
       vim-vsnip
       which-key-nvim
+      wilder-nvim
       zig-vim
     ];
   };

@@ -88,7 +88,6 @@ wk.register(mappings)
 
 -- Telescope
 
-local actions = require("telescope.actions")
 local trouble = require("trouble.providers.telescope")
 local telescope = require("telescope")
 
@@ -101,7 +100,7 @@ telescope.setup {
   }
 }
 
-require("telescope").load_extension("fzf")
+telescope.load_extension("fzf")
 
 mappings = {
   f = {
@@ -207,9 +206,9 @@ require("formatter").setup(
       terraform = {
         function()
           return {
-            exe = "terraform fmt",
-            args = {"-write=true", "-list=false"},
-            stdin = false
+            exe = "terraform",
+            args = {"fmt", "-"},
+            stdin = true
           }
         end
       },
@@ -226,6 +225,15 @@ require("formatter").setup(
           return {
             exe = "mix format",
             stdin = false
+          }
+        end
+      },
+      python = {
+        function()
+          return {
+            exe = "black",
+            args = {"-"},
+            stdin = true
           }
         end
       }
@@ -282,9 +290,6 @@ cmp.setup(
       -- REQUIRED - you must specify a snippet engine
       expand = function(args)
         vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-        -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
-        -- require'snippy'.expand_snippet(args.body) -- For `snippy` users.
       end
     },
     mapping = {
@@ -304,10 +309,7 @@ cmp.setup(
     sources = cmp.config.sources(
       {
         {name = "nvim_lsp"},
-        {name = "vsnip"}, -- For vsnip users.
-        -- { name = 'luasnip' }, -- For luasnip users.
-        -- { name = 'ultisnips' }, -- For ultisnips users.
-        -- { name = 'snippy' }, -- For snippy users.
+        {name = "vsnip"},
         {name = "path"}
       },
       {
@@ -317,27 +319,55 @@ cmp.setup(
   }
 )
 
--- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline(
-  "/",
-  {
-    sources = {
-      {name = "buffer"}
-    }
-  }
-)
+cmd "call wilder#setup({'modes': [':', '/', '?']})"
+cmd [[
+call wilder#set_option('renderer', wilder#popupmenu_renderer(wilder#popupmenu_border_theme({
+      \ 'highlighter': wilder#basic_highlighter(),
+      \ 'min_width': '100%',
+      \ 'max_height': '20%',
+      \ 'reverse': 0,
+      \ 'highlights': {
+      \   'border': 'Normal',
+      \ },
+      \ 'border': 'rounded',
+      \ 'left': [
+      \   ' ', wilder#popupmenu_devicons(),
+      \ ],
+      \ })))
+]]
 
--- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline(
-  ":",
-  {
-    sources = cmp.config.sources(
-      {
-        {name = "path"}
-      },
-      {
-        {name = "cmdline"}
-      }
-    )
-  }
-)
+-- barbar
+local map = vim.api.nvim_set_keymap
+local opts = {noremap = true, silent = true}
+
+-- Move to previous/next
+map("n", "<A-,>", ":BufferPrevious<CR>", opts)
+map("n", "<A-.>", ":BufferNext<CR>", opts)
+-- Re-order to previous/next
+map("n", "<A-<>", ":BufferMovePrevious<CR>", opts)
+map("n", "<A->>", " :BufferMoveNext<CR>", opts)
+-- Goto buffer in position...
+map("n", "<A-1>", ":BufferGoto 1<CR>", opts)
+map("n", "<A-2>", ":BufferGoto 2<CR>", opts)
+map("n", "<A-3>", ":BufferGoto 3<CR>", opts)
+map("n", "<A-4>", ":BufferGoto 4<CR>", opts)
+map("n", "<A-5>", ":BufferGoto 5<CR>", opts)
+map("n", "<A-6>", ":BufferGoto 6<CR>", opts)
+map("n", "<A-7>", ":BufferGoto 7<CR>", opts)
+map("n", "<A-8>", ":BufferGoto 8<CR>", opts)
+map("n", "<A-9>", ":BufferGoto 9<CR>", opts)
+map("n", "<A-0>", ":BufferLast<CR>", opts)
+-- Close buffer
+map("n", "<A-c>", ":BufferClose<CR>", opts)
+-- Wipeout buffer
+--                 :BufferWipeout<CR>
+-- Close commands
+--                 :BufferCloseAllButCurrent<CR>
+--                 :BufferCloseBuffersLeft<CR>
+--                 :BufferCloseBuffersRight<CR>
+-- Magic buffer-picking mode
+map("n", "<C-p>", ":BufferPick<CR>", opts)
+-- Sort automatically by...
+map("n", "<Space>bb", ":BufferOrderByBufferNumber<CR>", opts)
+map("n", "<Space>bd", ":BufferOrderByDirectory<CR>", opts)
+map("n", "<Space>bl", ":BufferOrderByLanguage<CR>", opts)

@@ -8,7 +8,6 @@
 
   hardware = {
     nvidia.modesetting.enable = true;
-    pulseaudio.enable = false;
     bluetooth.enable = true;
     video.hidpi.enable = true;
     opengl = {
@@ -22,6 +21,7 @@
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
+    trustedUsers = [ "root" "chris" ];
   };
 
   boot = {
@@ -43,10 +43,6 @@
     interfaces.enp60s0.useDHCP = true;
     interfaces.wlp58s0.useDHCP = true;
     nameservers = [ "1.1.1.1" "1.0.0.1" ];
-    wireless = {
-      enable = true;
-      userControlled = { enable = true; };
-    };
   };
 
   security.rtkit.enable = true;
@@ -69,6 +65,9 @@
   };
 
   environment = {
+    etc."elixir-ls/language_server.sh".source =
+      "${pkgs.elixir_ls}/lib/language_server.sh";
+
     systemPackages = with pkgs; [ neovim git ];
     gnome.excludePackages = with pkgs.gnome; [
       baobab
@@ -95,7 +94,7 @@
 
   # Enable the OpenSSH daemon.
   services = {
-    redis.enable = true;
+    redis.servers = { "" = { enable = true; }; };
 
     printing = {
       enable = true;
@@ -126,15 +125,11 @@
       #   };
       # };
       videoDrivers = [ "nvidia" ];
-      services.xserver.displayManager.gdm.enable = true;
-      services.xserver.desktopManager.gnome.enable = true;
-    };
-
-    pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
+      displayManager.gdm = {
+        enable = true;
+        wayland = false;
+      };
+      desktopManager.gnome.enable = true;
     };
 
     pcscd.enable = true;
@@ -147,10 +142,9 @@
   };
 
   virtualisation = {
-    podman = {
+    docker = {
       enable = true;
-      dockerCompat = true;
-      enableNvidia = true;
+      rootless.enable = true;
     };
   };
 

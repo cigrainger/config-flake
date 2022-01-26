@@ -2,14 +2,11 @@
 
 {
   imports = [
-    # ./home/alacritty.nix
-    # ./home/bspwm.nix
+    ./home/alacritty.nix
     ./home/direnv.nix
+    ./home/gnome-terminal.nix
     ./home/neovim.nix
-    # ./home/polybar.nix
-    # ./home/rofi.nix
     ./home/shell.nix
-    # ./home/sxhkd.nix
   ];
 
   home.packages = with pkgs; [
@@ -21,32 +18,48 @@
     bottom
     brave
     calibre
+    cachix
     discord
     exercism
     fd
     firefox
     gh
-    # gnome.seahorse
+    gnomeExtensions.screenshot-tool
     hfsprogs
+    lazydocker
     libreoffice
     mailspring
+    mpv
     neofetch
     nixfmt
     ripgrep
-    scrot
     signal-cli
     signal-desktop
     slack
     spotify
-    # spotify-tui
+    ssm-session-manager-plugin
     transmission-gtk
-    wezterm
+    unzip
+    vocal
     yubikey-manager
     yubioath-desktop
   ];
 
-  # xdg.configFile."dunst/dunstrc".source = ./configs/dunst/dunstrc;
-  # xdg.configFile."wezterm/wezterm.lua".source = ./configs/wezterm/wezterm.lua;
+  dconf.settings = {
+    "org/gnome/desktop/interface" = { text-scaling-factor = 1.25; };
+  };
+
+  gtk = {
+    enable = true;
+    theme = {
+      name = "Orchis-dark";
+      package = pkgs.orchis-theme;
+    };
+    iconTheme = {
+      name = "Tela";
+      package = pkgs.tela-icon-theme;
+    };
+  };
 
   programs = {
     nnn = {
@@ -57,7 +70,6 @@
     lazygit.enable = true;
     gpg.enable = true;
     password-store.enable = true;
-    # feh.enable = true;
 
     exa = {
       enable = true;
@@ -69,6 +81,11 @@
       lfs.enable = true;
       userEmail = "chris@amplified.ai";
       userName = "Christopher Grainger";
+      extraConfig = {
+        credential.helper = "${
+            pkgs.git.override { withLibsecret = true; }
+          }/bin/git-credential-libsecret";
+      };
     };
 
     fzf = {
@@ -100,8 +117,8 @@
       enable = true;
       baseIndex = 1;
       extraConfig = ''
-        set  -g default-terminal "tmux-256color"
-        set -ag terminal-overrides ",alacritty:RGB"
+        set -g default-terminal 'screen-256color'
+        set -ag terminal-overrides ',xterm-256color:Tc'
       '';
       clock24 = true;
       keyMode = "vi";
