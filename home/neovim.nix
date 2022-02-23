@@ -14,6 +14,7 @@
     extraConfig = "lua require('init')";
 
     extraPackages = with pkgs; [
+      clippy
       elixir_ls
       fd
       fzf
@@ -21,7 +22,6 @@
       gh
       neovim-remote
       nixfmt
-      nodejs
       nodePackages.bash-language-server
       nodePackages.lua-fmt
       nodePackages.prettier
@@ -29,12 +29,14 @@
       nodePackages.typescript-language-server
       nodePackages.vscode-json-languageserver
       nodePackages.yaml-language-server
+      nodejs
       ripgrep
       rnix-lsp
-      rustfmt
       rust-analyzer
+      rustfmt
       sumneko-lua-language-server
       tree-sitter
+      xclip
       zls
     ];
 

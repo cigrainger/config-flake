@@ -21,12 +21,15 @@
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
-    trustedUsers = [ "root" "chris" ];
+    settings = { trusted-users = [ "root" "chris" ]; };
   };
 
   boot = {
     loader = {
-      systemd-boot.enable = true;
+      systemd-boot = {
+        enable = true;
+        configurationLimit = 42;
+      };
       efi.canTouchEfiVariables = true;
     };
 
@@ -53,7 +56,7 @@
       isNormalUser = true;
       home = "/home/chris";
       description = "Christopher Grainger";
-      extraGroups = [ "wheel" ];
+      extraGroups = [ "wheel" "docker" ];
       shell = pkgs.zsh;
       hashedPassword =
         "$6$RkxvMra2G8J0$RDJzuC2A9gd3xybyVIqPf2WAgY.ptEmXggKd5HSC7YfXuOb84yfdlIkDKTdEgCod1.zhXFUqwitisr8./v9ZI.";
@@ -107,7 +110,7 @@
       ];
     };
 
-    # gnome.gnome-keyring.enable = true;
+    fwupd = { enable = true; };
 
     openssh = {
       enable = true;
@@ -116,14 +119,6 @@
 
     xserver = {
       enable = true;
-      # dpi = 144;
-      # libinput = {
-      #   enable = true;
-      #   touchpad = {
-      #     tapping = false;
-      #     naturalScrolling = true;
-      #   };
-      # };
       videoDrivers = [ "nvidia" ];
       displayManager.gdm = {
         enable = true;

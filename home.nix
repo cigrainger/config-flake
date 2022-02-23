@@ -1,20 +1,13 @@
 { pkgs, config, ... }:
 
 {
-  imports = [
-    ./home/alacritty.nix
-    ./home/direnv.nix
-    ./home/gnome-terminal.nix
-    ./home/neovim.nix
-    ./home/shell.nix
-  ];
+  imports = [ ./home/direnv.nix ./home/neovim.nix ./home/shell.nix ];
 
   home.packages = with pkgs; [
     _1password-gui
     authy
     aws-vault
     awscli2
-    bats
     bottom
     brave
     calibre
@@ -26,24 +19,30 @@
     gh
     gnomeExtensions.screenshot-tool
     hfsprogs
+    jq
     lazydocker
     libreoffice
     mailspring
     mpv
     neofetch
     nixfmt
+    postman
     ripgrep
+    sd
     signal-cli
     signal-desktop
     slack
-    spotify
     ssm-session-manager-plugin
+    tealdeer
     transmission-gtk
     unzip
     vocal
+    xclip
     yubikey-manager
     yubioath-desktop
   ];
+
+  xdg.configFile."wezterm/wezterm.lua".source = ./configs/wezterm/wezterm.lua;
 
   dconf.settings = {
     "org/gnome/desktop/interface" = { text-scaling-factor = 1.25; };
@@ -62,6 +61,14 @@
   };
 
   programs = {
+    kitty = {
+      enable = true;
+      font = {
+        name = "MonoLisa";
+        size = 10;
+      };
+      theme = "Dracula";
+    };
     nnn = {
       enable = true;
       package = pkgs.nnn.override ({ withNerdIcons = true; });
@@ -78,6 +85,7 @@
 
     git = {
       enable = true;
+      ignores = [ ".nix-mix" ".nix-hex" ".direnv" "shell.nix" ];
       lfs.enable = true;
       userEmail = "chris@amplified.ai";
       userName = "Christopher Grainger";
@@ -116,32 +124,17 @@
     tmux = {
       enable = true;
       baseIndex = 1;
-      extraConfig = ''
-        set -g default-terminal 'screen-256color'
-        set -ag terminal-overrides ',xterm-256color:Tc'
-      '';
       clock24 = true;
       keyMode = "vi";
       plugins = with pkgs.tmuxPlugins; [ dracula vim-tmux-navigator ];
     };
-
-    zathura.enable = true;
   };
 
   services = {
-    # dunst.enable = true;
-
     gpg-agent = {
       enable = true;
       defaultCacheTtl = 3600;
       pinentryFlavor = "gnome3";
     };
-
-    # picom = {
-    #   enable = true;
-    #   inactiveDim = "0.2";
-    #   inactiveOpacity = "0.9";
-    #   vSync = true;
-    # };
   };
 }

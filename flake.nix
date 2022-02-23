@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -10,7 +10,7 @@
   outputs = { self, nixpkgs, home-manager, ... }:
     let
       pkgs = import nixpkgs {
-        system = "x64_64-linux";
+        system = "x86_64-linux";
         config = {
           allowUnfree = true;
           cudaSupport = true;
@@ -22,9 +22,7 @@
         modules = [
           {
             environment.etc.nixpkgs.source = nixpkgs;
-            nix.nixPath = [
-              "nixpkgs=${nixpkgs}"
-            ];
+            nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
           }
           ./configuration.nix
           home-manager.nixosModules.home-manager
