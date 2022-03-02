@@ -69,7 +69,7 @@
     etc."elixir-ls/language_server.sh".source =
       "${pkgs.elixir_ls}/lib/language_server.sh";
 
-    systemPackages = with pkgs; [ feh neovim git ];
+    systemPackages = with pkgs; [ neovim git ];
   };
 
   fonts.fonts = with pkgs; [
@@ -114,12 +114,11 @@
       enable = true;
       dpi = 144;
       videoDrivers = [ "nvidia" ];
-      displayManager = {
-        lightdm.enable = true;
-        sessionCommands = "${pkgs.feh}/bin/feh --bg-scale ${./wallpaper.png}";
+      displayManager.gdm = {
+        enable = true;
+        wayland = false;
       };
-      windowManager.dwm.enable = true;
-      libinput.touchpad.naturalScrolling = true;
+      desktopManager.gnome.enable = true;
     };
 
     pcscd.enable = true;
@@ -135,9 +134,6 @@
   programs = {
     dconf.enable = true;
     mosh.enable = true;
-    seahorse.enable = true;
-    slock.enable = true;
-    nm-applet.enable = true;
   };
 
   virtualisation = {

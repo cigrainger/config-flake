@@ -19,6 +19,7 @@
     filezilla
     firefox
     gh
+    gnome.gnome-tweaks
     hfsprogs
     jq
     lazydocker
@@ -45,24 +46,6 @@
     xh
     yubikey-manager
     yubioath-desktop
-
-    (st.overrideAttrs (oldAttrs: rec {
-      buildInputs = oldAttrs.buildInputs ++ [ harfbuzz ];
-      patches = [
-        ./patches/st-dracula.diff
-        ./patches/st-font.diff
-        # (fetchpatch {
-        #   url =
-        #     "https://st.suckless.org/patches/boxdraw/st-boxdraw_v2-0.8.3.diff";
-        #   sha256 = "0n4n83mffxp8i0c2hfaqabxbqz0as2yxx8v8ll76gxiihqa1hhd2";
-        # })
-        (fetchpatch {
-          url =
-            "https://st.suckless.org/patches/ligatures/0.8.4/st-ligatures-20210824-0.8.4.diff";
-          sha256 = "0mh7p3k5fx84n80m639agk838x2pp6628w8sca1xjgv64dfic574";
-        })
-      ];
-    }))
   ];
 
   gtk = {
@@ -81,6 +64,15 @@
     broot = {
       enable = true;
       enableZshIntegration = true;
+    };
+
+    kitty = {
+      enable = true;
+      font = {
+        name = "MonoLisa";
+        size = 10;
+      };
+      theme = "Dracula";
     };
 
     nnn = {
