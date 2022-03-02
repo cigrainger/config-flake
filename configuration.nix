@@ -3,9 +3,6 @@
 {
   imports = [ ./hardware-configuration.nix ];
 
-  nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.permittedInsecurePackages = [ "electron-9.4.4" ];
-
   hardware = {
     nvidia.modesetting.enable = true;
     bluetooth.enable = true;
@@ -46,6 +43,7 @@
     interfaces.enp60s0.useDHCP = true;
     interfaces.wlp58s0.useDHCP = true;
     nameservers = [ "1.1.1.1" "1.0.0.1" ];
+    networkmanager.enable = true;
   };
 
   security.rtkit.enable = true;
@@ -56,7 +54,7 @@
       isNormalUser = true;
       home = "/home/chris";
       description = "Christopher Grainger";
-      extraGroups = [ "wheel" "docker" ];
+      extraGroups = [ "wheel" "networkmanager" ];
       shell = pkgs.zsh;
       hashedPassword =
         "$6$RkxvMra2G8J0$RDJzuC2A9gd3xybyVIqPf2WAgY.ptEmXggKd5HSC7YfXuOb84yfdlIkDKTdEgCod1.zhXFUqwitisr8./v9ZI.";
@@ -71,20 +69,7 @@
     etc."elixir-ls/language_server.sh".source =
       "${pkgs.elixir_ls}/lib/language_server.sh";
 
-    systemPackages = with pkgs; [ neovim git ];
-    gnome.excludePackages = with pkgs.gnome; [
-      baobab
-      cheese
-      eog
-      epiphany
-      gedit
-      simple-scan
-      totem
-      yelp
-      geary
-      gnome-maps
-      gnome-music
-    ];
+    systemPackages = with pkgs; [ feh neovim git ];
   };
 
   fonts.fonts = with pkgs; [
@@ -97,6 +82,14 @@
 
   # Enable the OpenSSH daemon.
   services = {
+
+    cron = {
+      enable = true;
+      systemCronJobs = [
+        "*/0 11 * * * bash -c 'cd \"$(navi info cheats-path)/<user>__<repo>\" && git pull -q origin master'"
+      ];
+    };
+
     redis.servers = { "" = { enable = true; }; };
 
     printing = {
@@ -119,27 +112,39 @@
 
     xserver = {
       enable = true;
+      dpi = 144;
       videoDrivers = [ "nvidia" ];
-      displayManager.gdm = {
-        enable = true;
-        wayland = false;
+      displayManager = {
+        lightdm.enable = true;
+        sessionCommands = "${pkgs.feh}/bin/feh --bg-scale ${./wallpaper.png}";
       };
-      desktopManager.gnome.enable = true;
+      windowManager.dwm.enable = true;
+      libinput.touchpad.naturalScrolling = true;
     };
 
     pcscd.enable = true;
     udev.packages = [ pkgs.yubikey-personalization ];
+    gnome.gnome-keyring.enable = true;
+    picom = {
+      enable = true;
+      backend = "glx";
+      vSync = true;
+    };
   };
 
   programs = {
     dconf.enable = true;
     mosh.enable = true;
+    seahorse.enable = true;
+    slock.enable = true;
+    nm-applet.enable = true;
   };
 
   virtualisation = {
-    docker = {
+    podman = {
       enable = true;
-      rootless.enable = true;
+      enableNvidia = true;
+      dockerCompat = true;
     };
   };
 

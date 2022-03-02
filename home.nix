@@ -13,19 +13,23 @@
     calibre
     cachix
     discord
+    dmenu
     exercism
     fd
+    filezilla
     firefox
     gh
-    gnomeExtensions.screenshot-tool
     hfsprogs
     jq
     lazydocker
     libreoffice
     mailspring
     mpv
+    ncdu
     neofetch
-    nixfmt
+    networkmanager
+    networkmanager-openvpn
+    onefetch
     postman
     ripgrep
     sd
@@ -35,24 +39,37 @@
     ssm-session-manager-plugin
     tealdeer
     transmission-gtk
+    udiskie
     unzip
-    vocal
     xclip
+    xh
     yubikey-manager
     yubioath-desktop
+
+    (st.overrideAttrs (oldAttrs: rec {
+      buildInputs = oldAttrs.buildInputs ++ [ harfbuzz ];
+      patches = [
+        ./patches/st-dracula.diff
+        ./patches/st-font.diff
+        # (fetchpatch {
+        #   url =
+        #     "https://st.suckless.org/patches/boxdraw/st-boxdraw_v2-0.8.3.diff";
+        #   sha256 = "0n4n83mffxp8i0c2hfaqabxbqz0as2yxx8v8ll76gxiihqa1hhd2";
+        # })
+        (fetchpatch {
+          url =
+            "https://st.suckless.org/patches/ligatures/0.8.4/st-ligatures-20210824-0.8.4.diff";
+          sha256 = "0mh7p3k5fx84n80m639agk838x2pp6628w8sca1xjgv64dfic574";
+        })
+      ];
+    }))
   ];
-
-  xdg.configFile."wezterm/wezterm.lua".source = ./configs/wezterm/wezterm.lua;
-
-  dconf.settings = {
-    "org/gnome/desktop/interface" = { text-scaling-factor = 1.25; };
-  };
 
   gtk = {
     enable = true;
     theme = {
-      name = "Orchis-dark";
-      package = pkgs.orchis-theme;
+      name = "Dracula";
+      package = pkgs.dracula-theme;
     };
     iconTheme = {
       name = "Tela";
@@ -61,17 +78,34 @@
   };
 
   programs = {
-    kitty = {
+    broot = {
       enable = true;
-      font = {
-        name = "MonoLisa";
-        size = 10;
-      };
-      theme = "Dracula";
+      enableZshIntegration = true;
     };
+
     nnn = {
       enable = true;
-      package = pkgs.nnn.override ({ withNerdIcons = true; });
+      package = pkgs.nnn.override { withNerdIcons = true; };
+      extraPackages = with pkgs; [ pmount udisks ];
+      plugins = {
+        mappings = {
+          c = "fzcd";
+          f = "finder";
+          v = "imgview";
+          t = "nmount";
+        };
+        src = (pkgs.fetchFromGitHub {
+          owner = "jarun";
+          repo = "nnn";
+          rev = "v4.0";
+          sha256 = "sha256-Hpc8YaJeAzJoEi7aJ6DntH2VLkoR6ToP6tPYn3llR7k=";
+        }) + "/plugins";
+      };
+    };
+
+    navi = {
+      enable = true;
+      enableZshIntegration = true;
     };
 
     lazygit.enable = true;
@@ -85,6 +119,13 @@
 
     git = {
       enable = true;
+      delta = {
+        enable = true;
+        options = {
+          syntax-theme = "Dracula";
+          side-by-side = true;
+        };
+      };
       ignores = [ ".nix-mix" ".nix-hex" ".direnv" "shell.nix" ];
       lfs.enable = true;
       userEmail = "chris@amplified.ai";
@@ -99,13 +140,6 @@
     fzf = {
       enable = true;
       enableZshIntegration = true;
-      changeDirWidgetCommand = "fd --type d";
-      changeDirWidgetOptions = [ "--preview 'tree -C {} | head -200'" ];
-      defaultCommand = "fd --type f";
-      defaultOptions = [ "--height 40%" "--border" ];
-      fileWidgetCommand = "fd --type f";
-      fileWidgetOptions = [ "--preview 'head {}'" ];
-      historyWidgetOptions = [ "--sort" "--exact" ];
     };
 
     bat = {
@@ -136,5 +170,7 @@
       defaultCacheTtl = 3600;
       pinentryFlavor = "gnome3";
     };
+
+    udiskie.enable = true;
   };
 }

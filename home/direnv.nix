@@ -6,21 +6,15 @@
     enableZshIntegration = true;
     nix-direnv.enable = true;
     stdlib = ''
-      layout_poetry() {
-        if [[ ! -f pyproject.toml ]]; then
-          log_error 'No pyproject.toml found. Use `poetry new` or `poetry init` to create one first.'
-          exit 2
-        fi
+      layout_postgres() {
+        export PGDATA="''$(direnv_layout_dir)/postgres"
+        export PGHOST="''$PGDATA"
 
-        local VENV=$(poetry env list --full-path | cut -d' ' -f1)
-        if [[ -z $VENV || ! -d $VENV/bin ]]; then
-          log_error 'No poetry virtual environment found. Use `poetry install` to create one first.'
-          exit 2
+        if [[ ! -d "''$PGDATA" ]]; then
+          initdb
+          echo "listen_addresses = '''''\nunix_socket_directories = '$PGHOST'" > ''$PGDATA/postgresql.conf
+          echo "CREATE DATABASE ''$USER;" | postgres --single -E postgres
         fi
-
-        export VIRTUAL_ENV=$VENV
-        export POETRY_ACTIVE=1
-        PATH_add "$VENV/bin"
       }
     '';
   };
