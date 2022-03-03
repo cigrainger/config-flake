@@ -1,7 +1,8 @@
 { pkgs, config, ... }:
 
 {
-  imports = [ ./home/direnv.nix ./home/neovim.nix ./home/shell.nix ];
+  imports =
+    [ ./home/mail.nix ./home/direnv.nix ./home/neovim.nix ./home/shell.nix ];
 
   home.packages = with pkgs; [
     _1password-gui
@@ -17,13 +18,14 @@
     exercism
     fd
     filezilla
-    firefox
     gh
     gnome.gnome-tweaks
+    gnomeExtensions.window-is-ready-remover
     hfsprogs
     jq
     lazydocker
     libreoffice
+    libsecret
     mailspring
     mpv
     ncdu
@@ -123,6 +125,7 @@
       userEmail = "chris@amplified.ai";
       userName = "Christopher Grainger";
       extraConfig = {
+        core = { editor = "nvim"; };
         credential.helper = "${
             pkgs.git.override { withLibsecret = true; }
           }/bin/git-credential-libsecret";
@@ -152,7 +155,21 @@
       baseIndex = 1;
       clock24 = true;
       keyMode = "vi";
-      plugins = with pkgs.tmuxPlugins; [ dracula vim-tmux-navigator ];
+      plugins = with pkgs.tmuxPlugins; [
+        yank
+        vim-tmux-navigator
+        {
+          plugin = dracula;
+          extraConfig = ''
+            set -g @dracula-plugins "cpu-usage ram-usage"
+            set -g @dracula-show-flags true
+            set -g @dracula-show-powerline true
+          '';
+        }
+      ];
+      extraConfig = ''
+        set -g mouse on
+      '';
     };
   };
 
@@ -163,6 +180,10 @@
       pinentryFlavor = "gnome3";
     };
 
-    udiskie.enable = true;
+    xcape = {
+      enable = true;
+      mapExpression = { "#66" = "Escape"; };
+      timeout = 200;
+    };
   };
 }

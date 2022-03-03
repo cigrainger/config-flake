@@ -121,6 +121,7 @@
       statix
       stylua
       sumneko-lua-language-server
+      terraform
       tree-sitter
       xclip
       zls
