@@ -78,6 +78,7 @@ g.mapleader = " "
 
 -- Common top level mappings
 mappings = {
+	K = { ":lua vim.lsp.buf.hover()<CR>", "Hover" },
 	["<leader>l"] = { "<cmd>noh<CR>", "Clear highlights" },
 	["<leader>o"] = { "m`o<Esc>``", "Insert newline" },
 	["<leader>lg"] = { ":LazyGit<CR>", "LazyGit" },
@@ -195,7 +196,6 @@ require("lualine").setup({
 
 -- LSP
 require("lsp")
-require("rust-tools").setup()
 
 -- nvim-tree
 require("nvim-tree").setup()

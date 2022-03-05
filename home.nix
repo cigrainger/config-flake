@@ -1,8 +1,15 @@
 { pkgs, config, ... }:
 
 {
-  imports =
-    [ ./home/mail.nix ./home/direnv.nix ./home/neovim.nix ./home/shell.nix ];
+  imports = [
+    ./home/direnv.nix
+    ./home/firefox.nix
+    ./home/mail.nix
+    ./home/neovim.nix
+    ./home/shell.nix
+  ];
+
+  home.stateVersion = "21.11";
 
   home.packages = with pkgs; [
     _1password-gui
@@ -42,6 +49,7 @@
     ssm-session-manager-plugin
     tealdeer
     transmission-gtk
+    tree
     udiskie
     unzip
     xclip
@@ -135,6 +143,11 @@
     fzf = {
       enable = true;
       enableZshIntegration = true;
+      changeDirWidgetCommand = "fd --type d";
+      changeDirWidgetOptions = [ "--preview 'tree -C {} | head -200'" ];
+      fileWidgetCommand = "fd --type f";
+      fileWidgetOptions = [ "--preview 'head {}'" ];
+      historyWidgetOptions = [ "--sort" "--exact" ];
     };
 
     bat = {

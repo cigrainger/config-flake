@@ -43,7 +43,7 @@ local on_attach = function(client)
 		},
 	})
 
-	if client.name == "rnix" or client.name == "elixirls" then
+	if client.name == "rnix" or client.name == "elixirls" or client.name == "rust_analyzer" then
 		client.resolved_capabilities.document_formatting = false
 		client.resolved_capabilities.document_range_formatting = false
 	end
@@ -58,7 +58,6 @@ local on_attach = function(client)
 	end
 
 	local mappings = {
-		K = { ":lua vim.lsp.buf.hover()<CR>", "Hover" },
 		d = {
 			name = "diagnostics",
 			j = { ":lua vim.lsp.diagnostic.goto_next()<CR>", "Next diagnostic" },
@@ -99,6 +98,7 @@ local function setup_servers()
 end
 
 setup_servers()
+require("rust-tools").setup({ server = { on_attach = on_attach } })
 
 require("null-ls").setup({
 	on_attach = on_attach,

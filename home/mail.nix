@@ -1,9 +1,14 @@
 { pkgs, ... }:
 
+# NOTE: Watch for [`himalaya`](https://github.com/soywod/himalaya) to be ready.
+
 {
-  xdg.configFile."neomutt/dracula.muttrc" = {
-    source = ../configs/neomutt/dracula.muttrc;
+  xdg.configFile."neomutt" = {
+    source = ../configs/neomutt;
+    recursive = true;
   };
+
+  home.packages = with pkgs; [ lynx urlview ];
 
   programs = {
     mbsync.enable = true;
@@ -14,6 +19,8 @@
       sidebar.enable = true;
       extraConfig = ''
         source ~/.config/neomutt/dracula.muttrc
+        set mailcap_path = ~/.config/neomutt/mailcap
+        auto_view text/html
       '';
     };
 
@@ -26,10 +33,8 @@
   accounts.email.accounts = {
     cigrainger = {
       address = "chris@cigrainger.com";
-      imap = {
-        host = "imap.fastmail.com";
-        port = 993;
-      };
+      flavor = "fastmail.com";
+      folders.trash = "Archive";
       mbsync = {
         enable = true;
         create = "maildir";
@@ -38,10 +43,6 @@
       neomutt = { enable = true; };
       notmuch.enable = true;
       primary = true;
-      smtp = {
-        host = "smtp.fastmail.com";
-        port = 465;
-      };
       realName = "Christopher Grainger";
       userName = "chris@cigrainger.com";
       passwordCommand = "secret-tool lookup email chris@cigrainger.com";

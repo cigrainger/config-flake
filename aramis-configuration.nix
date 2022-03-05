@@ -101,6 +101,8 @@
       passwordAuthentication = false;
     };
 
+    redis.servers = { "" = { enable = true; }; };
+
     xserver = {
       enable = true;
       dpi = 144;
