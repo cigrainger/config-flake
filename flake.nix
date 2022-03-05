@@ -22,7 +22,10 @@
         system = "x86_64-linux";
         modules = [
           {
-            nixpkgs = { inherit pkgs; };
+            nixpkgs = {
+              inherit pkgs;
+              overlays = [ nur.overlay ];
+            };
             environment.etc.nixpkgs.source = nixpkgs;
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
           }
