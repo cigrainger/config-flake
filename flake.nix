@@ -16,6 +16,8 @@
           allowUnfree = true;
           permittedInsecurePackages = [ "electron-9.4.4" ];
         };
+        overlays =
+          [ (_: _: { cider = pkgs.callPackage ./pkgs/cider.nix { }; }) ];
       };
     in {
       nixosConfigurations.athos = nixpkgs.lib.nixosSystem {

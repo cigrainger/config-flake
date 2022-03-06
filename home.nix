@@ -20,6 +20,7 @@
     brave
     calibre
     cachix
+    cider
     discord
     dmenu
     exercism
