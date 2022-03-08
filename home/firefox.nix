@@ -7,7 +7,6 @@
     extensions = with pkgs.nur.repos.rycee.firefox-addons; [
       decentraleyes
       facebook-container
-      firenvim
       https-everywhere
       onepassword-password-manager
       privacy-badger

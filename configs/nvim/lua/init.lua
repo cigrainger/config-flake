@@ -276,3 +276,12 @@ mappings = {
 	},
 }
 wk.register(mappings, { prefix = "<leader>" })
+
+-- Octo
+require("octo").setup()
+
+-- DiffView
+require("diffview").setup()
+
+-- Neogit
+require("neogit").setup({ integrations = { diffview = true } })

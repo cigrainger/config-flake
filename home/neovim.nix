@@ -22,6 +22,7 @@
       cmp-nvim-lsp
       cmp-path
       cmp-vsnip
+      diffview-nvim
       dracula-vim
       editorconfig-vim
       friendly-snippets
@@ -30,11 +31,13 @@
       lsp_signature-nvim
       lualine-nvim
       markdown-preview-nvim
+      neogit
       nvim-cmp
       nvim-lspconfig
       nvim-tree-lua
       nvim-web-devicons
       null-ls-nvim
+      octo-nvim
       project-nvim
       rust-tools-nvim
       telescope-fzf-native-nvim

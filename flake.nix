@@ -16,50 +16,32 @@
           allowUnfree = true;
           permittedInsecurePackages = [ "electron-9.4.4" ];
         };
-        overlays =
-          [ (_: _: { cider = pkgs.callPackage ./pkgs/cider.nix { }; }) ];
+        overlays = [
+          (_: _: { cider = pkgs.callPackage ./pkgs/cider.nix { }; })
+          nur.overlay
+        ];
+      };
+      common_config = {
+        nixpkgs = { inherit pkgs; };
+        home-manager.useGlobalPkgs = true;
+        home-manager.useUserPackages = true;
+        home-manager.users.chris = ./home.nix;
       };
     in {
       nixosConfigurations.athos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          {
-            nixpkgs = {
-              inherit pkgs;
-              overlays = [ nur.overlay ];
-            };
-            environment.etc.nixpkgs.source = nixpkgs;
-            nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
-          }
-          ./configuration.nix
+          ./hosts/athos/configuration.nix
           home-manager.nixosModules.home-manager
-          {
-            nixpkgs.config = { allowUnfree = true; };
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.chris = ./home.nix;
-          }
+          common_config
         ];
       };
       nixosConfigurations.aramis = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          {
-            nixpkgs = {
-              inherit pkgs;
-              overlays = [ nur.overlay ];
-            };
-            environment.etc.nixpkgs.source = nixpkgs;
-            nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
-          }
-          ./aramis-configuration.nix
+          ./hosts/aramis/configuration.nix
           home-manager.nixosModules.home-manager
-          {
-            nixpkgs.config = { allowUnfree = true; };
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.chris = ./home.nix;
-          }
+          common_config
         ];
       };
     };

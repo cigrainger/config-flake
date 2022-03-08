@@ -23,6 +23,7 @@
     cider
     discord
     dmenu
+    element-desktop
     exercism
     fd
     filezilla
