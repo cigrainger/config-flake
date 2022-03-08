@@ -21,27 +21,21 @@
           nur.overlay
         ];
       };
-      common_config = {
-        nixpkgs = { inherit pkgs; };
-        home-manager.useGlobalPkgs = true;
-        home-manager.useUserPackages = true;
-        home-manager.users.chris = ./home.nix;
-      };
     in {
       nixosConfigurations.athos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
+          { nixpkgs = { inherit pkgs; }; }
           ./hosts/athos/configuration.nix
           home-manager.nixosModules.home-manager
-          common_config
         ];
       };
       nixosConfigurations.aramis = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
+          { nixpkgs = { inherit pkgs; }; }
           ./hosts/aramis/configuration.nix
           home-manager.nixosModules.home-manager
-          common_config
         ];
       };
     };

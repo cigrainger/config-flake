@@ -124,4 +124,9 @@
     };
   };
 
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    users.chris = ../../home.nix;
+  };
 }
