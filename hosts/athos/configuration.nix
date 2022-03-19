@@ -3,13 +3,7 @@
 {
   imports = [ ..common/configuration.nix ./hardware-configuration.nix ];
 
-  hardware = {
-    nvidia.modesetting.enable = true;
-    opengl = {
-      enable = true;
-      driSupport = true;
-    };
-  };
+  hardware.nvidia.modesetting.enable = true;
 
   networking.hostName = "athos";
 

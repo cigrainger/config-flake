@@ -7,8 +7,8 @@ appimageTools.wrapType2 rec {
 
   src = fetchurl {
     url =
-      "https://1084-429851205-gh.circle-artifacts.com/0/%7E/Cider/dist/artifacts/Cider-1.3.1087.AppImage";
-    sha256 = "0dh51wi1a2fdm51fg200bsli4z1gy1lbimfcmdcrlwc9kkznjm7g";
+      "https://1308-429851205-gh.circle-artifacts.com/0/%7E/Cider/dist/artifacts/Cider-1.3.1308.AppImage";
+    sha256 = "1lbyvn1c8155p039qfzx7jwad7km073phkmrzjm0w3ahdpwz3wgi";
   };
 
   extraInstallCommands =

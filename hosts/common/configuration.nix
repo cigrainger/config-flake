@@ -4,6 +4,10 @@
   hardware = {
     bluetooth.enable = true;
     video.hidpi.enable = true;
+    opengl = {
+      enable = true;
+      driSupport = true;
+    };
   };
 
   nix = {
@@ -12,6 +16,11 @@
       experimental-features = nix-command flakes
     '';
     settings = { trusted-users = [ "root" "chris" ]; };
+  };
+
+  nixpkgs.config = {
+    allowUnfree = true;
+    enableRedistributableFirmware = true;
   };
 
   boot = {
@@ -36,11 +45,15 @@
     interfaces.wlp58s0.useDHCP = true;
     nameservers = [ "1.1.1.1" "1.0.0.1" ];
     networkmanager.enable = true;
+    firewall.extraCommands = ''
+      ip46tables -I INPUT 1 -i vboxnet+ -p tcp -m tcp --dport 2049 -j ACCEPT
+    '';
   };
 
   security.rtkit.enable = true;
 
   users = {
+    extraGroups.vboxusers.members = [ "chris" ];
     mutableUsers = false;
     users.chris = {
       isNormalUser = true;
@@ -107,17 +120,31 @@
       desktopManager.gnome.enable = true;
     };
 
+    syncthing = {
+      enable = true;
+      user = "chris";
+      dataDir = "/home/chris/Documents";
+      configDir = "/home/chris/Documents/.config/syncthing";
+    };
+
     pcscd.enable = true;
     udev.packages = [ pkgs.yubikey-personalization ];
     picom = { enable = true; };
+    nfs.server.enable = true;
   };
 
   programs = {
     dconf.enable = true;
     mosh.enable = true;
+    ssh.startAgent = false;
+    gnupg.agent = {
+      enable = true;
+      enableSSHSupport = true;
+    };
   };
 
   virtualisation = {
+    virtualbox.host.enable = true;
     podman = {
       enable = true;
       dockerCompat = true;

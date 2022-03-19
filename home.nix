@@ -26,6 +26,7 @@
     element-desktop
     exercism
     fd
+    ffmpeg
     filezilla
     gh
     gnome.gnome-tweaks
@@ -41,6 +42,7 @@
     neofetch
     networkmanager
     networkmanager-openvpn
+    nix-tree
     onefetch
     postman
     ripgrep
@@ -49,15 +51,18 @@
     signal-desktop
     slack
     ssm-session-manager-plugin
+    tartube-yt-dlp
     tealdeer
     transmission-gtk
     tree
     udiskie
     unzip
+    vagrant
     xclip
     xh
     yubikey-manager
     yubioath-desktop
+    yt-dlp
   ];
 
   gtk = {
@@ -113,7 +118,10 @@
     };
 
     lazygit.enable = true;
-    gpg.enable = true;
+    gpg = {
+      enable = true;
+      scdaemonSettings = { disable-ccid = true; };
+    };
     password-store.enable = true;
 
     exa = {
@@ -139,6 +147,10 @@
         credential.helper = "${
             pkgs.git.override { withLibsecret = true; }
           }/bin/git-credential-libsecret";
+      };
+      signing = {
+        key = "2DAADC742D1B5395";
+        signByDefault = true;
       };
     };
 
@@ -192,7 +204,7 @@
     gpg-agent = {
       enable = true;
       defaultCacheTtl = 3600;
-      pinentryFlavor = "gnome3";
+      enableSshSupport = true;
     };
 
     xcape = {

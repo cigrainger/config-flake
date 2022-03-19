@@ -1,15 +1,58 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports = [ ../common/configuration.nix ./hardware-configuration.nix ];
 
-  hardware.trackpoint = {
-    enable = true;
-    device = "TPPS/2 Elan Trackpoint";
-    emulateWheel = true;
+  hardware = {
+    trackpoint = {
+      enable = true;
+      device = "TPPS/2 Elan Trackpoint";
+      emulateWheel = true;
+    };
+    pulseaudio.enable = false;
   };
 
   networking.hostName = "aramis";
+
+  services = {
+    fprintd.enable = true;
+    xserver = {
+      videoDrivers = [ "modesetting" ];
+      useGlamor = true;
+    };
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
+
+  };
+
+  systemd.user.services.foo = {
+    script = ''
+      sudo hda-verb /dev/snd/hwC0D0 0x1d SET_PIN_WIDGET_CONTROL 0x0
+    '';
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+  };
+
+  environment.systemPackages = with pkgs; [ alsa-tools ];
+
+  boot.initrd.kernelModules = [ "i915" ];
+
+  environment.variables = {
+    VDPAU_DRIVER =
+      lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
+  };
+
+  hardware.opengl.extraPackages = with pkgs; [
+    vaapiIntel
+    vaapiVdpau
+    libvdpau-va-gl
+    intel-media-driver
+    intel-compute-runtime
+  ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

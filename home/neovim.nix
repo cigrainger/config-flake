@@ -33,6 +33,7 @@
       markdown-preview-nvim
       neogit
       nvim-cmp
+      nvim-colorizer-lua
       nvim-lspconfig
       nvim-tree-lua
       nvim-web-devicons
@@ -92,6 +93,7 @@
     ];
 
     extraPackages = with pkgs; [
+      actionlint
       clang-tools
       clippy
       codespell

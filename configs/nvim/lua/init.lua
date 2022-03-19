@@ -285,3 +285,6 @@ require("diffview").setup()
 
 -- Neogit
 require("neogit").setup({ integrations = { diffview = true } })
+
+-- Colorizer
+require("colorizer").setup()

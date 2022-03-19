@@ -28,10 +28,7 @@
           };
           "Search Nix" = { url = "https://search.nixos.org"; };
         };
-        settings = {
-          "extensions.pocket.enabled" = false;
-          "media.eme.enabled" = true;
-        };
+        settings = { "extensions.pocket.enabled" = false; };
       };
     };
   };
