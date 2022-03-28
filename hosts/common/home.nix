@@ -2,96 +2,49 @@
 
 {
   imports = [
-    ./home/direnv.nix
-    ./home/firefox.nix
-    ./home/mail.nix
-    ./home/neovim.nix
-    ./home/shell.nix
+    ../../home/direnv.nix
+    ../../home/mail.nix
+    ../../home/neovim.nix
+    ../../home/shell.nix
   ];
 
   home.stateVersion = "21.11";
 
   home.packages = with pkgs; [
-    _1password-gui
-    authy
     aws-vault
     awscli2
     bottom
-    brave
-    calibre
     cachix
-    cider
-    discord
-    dmenu
-    element-desktop
     exercism
-    electron
     fd
     ffmpeg
-    filezilla
     gh
-    gnome.gnome-tweaks
-    gnomeExtensions.window-is-ready-remover
     hfsprogs
     jq
     lazydocker
-    libreoffice
     libsecret
-    mailspring
-    mpv
     ncdu
     neofetch
     networkmanager
     networkmanager-openvpn
     nix-tree
     onefetch
-    postman
     ripgrep
     sd
     signal-cli
-    signal-desktop
-    slack
     ssm-session-manager-plugin
-    tartube-yt-dlp
     tealdeer
-    transmission-gtk
     tree
-    udiskie
     unzip
-    vagrant
     xclip
     xh
     yubikey-manager
-    yubioath-desktop
-    yt-dlp
-    zotero
   ];
-
-  gtk = {
-    enable = true;
-    theme = {
-      name = "Dracula";
-      package = pkgs.dracula-theme;
-    };
-    iconTheme = {
-      name = "Tela";
-      package = pkgs.tela-icon-theme;
-    };
-  };
 
   programs = {
     broot = {
       enable = true;
       enableZshIntegration = true;
-    };
-
-    kitty = {
-      enable = true;
-      font = {
-        name = "MonoLisa";
-        size = 10;
-      };
-      theme = "Dracula";
     };
 
     nnn = {
@@ -208,6 +161,7 @@
       enable = true;
       defaultCacheTtl = 3600;
       enableSshSupport = true;
+      enableExtraSocket = true;
     };
 
     xcape = {
