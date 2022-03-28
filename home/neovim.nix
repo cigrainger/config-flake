@@ -17,7 +17,17 @@
     extraConfig = "lua require('init')";
     extraPython3Packages = ps: with ps; [ isort black mypy ];
 
-    plugins = with pkgs.vimPlugins; [
+    plugins = let
+      nvim-r = pkgs.vimUtils.buildVimPlugin {
+        name = "nvim-r";
+        src = pkgs.fetchgit {
+          url = "https://github.com/jalvesaq/nvim-r";
+          rev = "5c0a6cd7137907f6f6e44d0b5705929bf537c2db";
+          sha256 = "sha256-wmqmoYB/T2js+40K4UbB2g6IwvyOaaFq0bdWiFu68BM=";
+        };
+        buildInputs = with pkgs; [ which vim zip ];
+      };
+    in with pkgs.vimPlugins; [
       cmp-buffer
       cmp-nvim-lsp
       cmp-path
@@ -37,6 +47,7 @@
       nvim-lspconfig
       nvim-tree-lua
       nvim-web-devicons
+      nvim-r
       null-ls-nvim
       octo-nvim
       project-nvim
@@ -109,7 +120,7 @@
       nodePackages.bash-language-server
       nodePackages.eslint_d
       nodePackages.fixjson
-      nodePackages.lua-fmt
+      # nodePackages.lua-fmt
       nodePackages.prettier
       nodePackages.pyright
       nodePackages.typescript-language-server

@@ -25,6 +25,7 @@
     dmenu
     element-desktop
     exercism
+    electron
     fd
     ffmpeg
     filezilla
@@ -63,6 +64,7 @@
     yubikey-manager
     yubioath-desktop
     yt-dlp
+    zotero
   ];
 
   gtk = {
@@ -138,12 +140,13 @@
           side-by-side = true;
         };
       };
-      ignores = [ ".nix-mix" ".nix-hex" ".direnv" "shell.nix" ];
+      ignores = [ ".nix-mix" ".nix-hex" ".direnv" "shell.nix" ".envrc" ];
       lfs.enable = true;
       userEmail = "chris@amplified.ai";
       userName = "Christopher Grainger";
       extraConfig = {
         core = { editor = "nvim"; };
+        url = { "https://github.com" = { insteadOf = "git://github.com/"; }; };
         credential.helper = "${
             pkgs.git.override { withLibsecret = true; }
           }/bin/git-credential-libsecret";

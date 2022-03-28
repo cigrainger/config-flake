@@ -109,24 +109,6 @@
       ];
     };
 
-    xserver = {
-      enable = true;
-      displayManager = {
-        gdm = {
-          enable = true;
-          wayland = false;
-        };
-      };
-      desktopManager.gnome.enable = true;
-    };
-
-    syncthing = {
-      enable = true;
-      user = "chris";
-      dataDir = "/home/chris/Documents";
-      configDir = "/home/chris/Documents/.config/syncthing";
-    };
-
     pcscd.enable = true;
     udev.packages = [ pkgs.yubikey-personalization ];
     picom = { enable = true; };
@@ -146,8 +128,9 @@
   virtualisation = {
     virtualbox.host.enable = true;
     podman = {
-      enable = true;
       dockerCompat = true;
+      dockerSocket.enable = true;
+      enable = true;
     };
   };
 

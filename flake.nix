@@ -17,7 +17,10 @@
           permittedInsecurePackages = [ "electron-9.4.4" ];
         };
         overlays = [
-          (_: _: { cider = pkgs.callPackage ./pkgs/cider.nix { }; })
+          (_: _: {
+            cider = pkgs.callPackage ./pkgs/cider.nix { };
+            zotero = pkgs.callPackage ./pkgs/zotero/default.nix { };
+          })
           nur.overlay
         ];
       };

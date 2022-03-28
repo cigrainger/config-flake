@@ -15,8 +15,13 @@
   networking.hostName = "aramis";
 
   services = {
-    fprintd.enable = true;
     xserver = {
+      enable = true;
+      displayManager.gdm = {
+        enable = true;
+        wayland = false;
+      };
+      desktopManager.gnome.enable = true;
       videoDrivers = [ "modesetting" ];
       useGlamor = true;
     };
@@ -26,7 +31,6 @@
       alsa.support32Bit = true;
       pulse.enable = true;
     };
-
   };
 
   systemd.user.services.foo = {
@@ -37,13 +41,15 @@
     partOf = [ "graphical-session.target" ];
   };
 
-  environment.systemPackages = with pkgs; [ alsa-tools ];
-
   boot.initrd.kernelModules = [ "i915" ];
 
-  environment.variables = {
-    VDPAU_DRIVER =
-      lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
+  environment = {
+    systemPackages = with pkgs; [ alsa-tools ];
+    sessionVariables.NIXOS_OZONE_WL = "1";
+    variables = {
+      VDPAU_DRIVER =
+        lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
+    };
   };
 
   hardware.opengl.extraPackages = with pkgs; [
