@@ -7,7 +7,6 @@
     _1password-gui
     authy
     brave
-    calibre
     discord
     element-desktop
     electron

@@ -3,8 +3,8 @@
 {
   imports = [
     ../../home/direnv.nix
+    ../../home/helix.nix
     ../../home/mail.nix
-    ../../home/neovim.nix
     ../../home/shell.nix
   ];
 
@@ -42,6 +42,26 @@
   ];
 
   programs = {
+    zellij = {
+      enable = true;
+      settings = {
+        theme = "dracula";
+        themes.dracula.fg = [ 248 248 242 ];
+        themes.dracula.bg = [ 40 42 54 ];
+        themes.dracula.black = [ 0 0 0 ];
+        themes.dracula.gray = [ 68 71 90 ];
+        themes.dracula.red = [ 255 85 85 ];
+        themes.dracula.green = [ 80 250 123 ];
+        themes.dracula.yellow = [ 241 250 140 ];
+        themes.dracula.blue = [ 98 114 164 ];
+        themes.dracula.magenta = [ 255 121 198 ];
+        themes.dracula.cyan = [ 139 233 253 ];
+        themes.dracula.white = [ 255 255 255 ];
+        themes.dracula.orange = [ 255 184 108 ];
+        ui.pane_frames.rounded_corners = true;
+      };
+    };
+
     broot = {
       enable = true;
       enableZshIntegration = true;
@@ -98,7 +118,7 @@
       userEmail = "chris@amplified.ai";
       userName = "Christopher Grainger";
       extraConfig = {
-        core = { editor = "nvim"; };
+        core = { editor = "hx"; };
         url = { "https://github.com" = { insteadOf = "git://github.com/"; }; };
         credential.helper = "${
             pkgs.git.override { withLibsecret = true; }
@@ -124,35 +144,14 @@
       enable = true;
       config = { theme = "Dracula"; };
       themes = {
-        dracula = builtins.readFile (pkgs.fetchFromGitHub {
-          owner = "dracula";
-          repo = "sublime"; # Bat uses sublime syntax for its themes
-          rev = "26c57ec282abcaa76e57e055f38432bd827ac34e";
-          sha256 = "019hfl4zbn4vm4154hh3bwk6hm7bdxbr1hdww83nabxwjn99ndhv";
-        } + "/Dracula.tmTheme");
+        dracula = builtins.readFile (pkgs.fetchFromGitHub
+          {
+            owner = "dracula";
+            repo = "sublime"; # Bat uses sublime syntax for its themes
+            rev = "26c57ec282abcaa76e57e055f38432bd827ac34e";
+            sha256 = "019hfl4zbn4vm4154hh3bwk6hm7bdxbr1hdww83nabxwjn99ndhv";
+          } + "/Dracula.tmTheme");
       };
-    };
-
-    tmux = {
-      enable = true;
-      baseIndex = 1;
-      clock24 = true;
-      keyMode = "vi";
-      plugins = with pkgs.tmuxPlugins; [
-        yank
-        vim-tmux-navigator
-        {
-          plugin = dracula;
-          extraConfig = ''
-            set -g @dracula-plugins "cpu-usage ram-usage"
-            set -g @dracula-show-flags true
-            set -g @dracula-show-powerline true
-          '';
-        }
-      ];
-      extraConfig = ''
-        set -g mouse on
-      '';
     };
   };
 

@@ -17,13 +17,13 @@
         fe() {
           local files
           IFS=$'\n' files=($(fzf-tmux --height 80% --preview 'bat --color "always" {}' --query="$1" --multi --select-1 --exit-0))
-          [[ -n "$files" ]] && ''${"EDITOR:-vim"} "''${files[@]}"
+          [[ -n "$files" ]] && ''${"EDITOR:-hx"} "''${files[@]}"
         }
       '';
 
       sessionVariables = {
         AWS_VAULT_PROMPT = "ykman";
-        EDITOR = "vim";
+        EDITOR = "hx";
       };
 
       shellAliases = {

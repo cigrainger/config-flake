@@ -70,7 +70,7 @@
     etc."elixir-ls/language_server.sh".source =
       "${pkgs.elixir_ls}/lib/language_server.sh";
 
-    systemPackages = with pkgs; [ neovim git ];
+    systemPackages = with pkgs; [ helix git ];
   };
 
   fonts.fonts = with pkgs; [
@@ -97,17 +97,6 @@
     };
 
     redis.servers = { "" = { enable = true; }; };
-
-    printing = {
-      enable = true;
-      drivers = with pkgs; [
-        gutenprint
-        gutenprintBin
-        brlaser
-        brgenml1lpr
-        brgenml1cupswrapper
-      ];
-    };
 
     pcscd.enable = true;
     udev.packages = [ pkgs.yubikey-personalization ];
