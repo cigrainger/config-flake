@@ -7,6 +7,7 @@
     _1password-gui
     authy
     brave
+    chrysalis
     discord
     element-desktop
     electron
@@ -17,7 +18,6 @@
     postman
     signal-desktop
     slack
-    tartube-yt-dlp
     transmission-gtk
     yubioath-desktop
     yt-dlp

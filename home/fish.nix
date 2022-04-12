@@ -2,8 +2,6 @@
 
 {
   programs = {
-    atuin.enable = true;
-
     fish = {
       enable = true;
 
@@ -11,9 +9,9 @@
         fish_vi_key_bindings insert
         set -Ux FZF_DEFAULT_OPTS "--color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9 --color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9 --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6 --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4"
         set fzf_preview_dir_cmd exa --all --color=always
-        set AWS_VAULT_PROMPT "ykman"
-        set EDITOR "hx"
-        set GIT_PAGER "delta --dark"
+        set -gx AWS_VAULT_PROMPT "ykman"
+        set -gx EDITOR "hx"
+        set -gx GIT_PAGER "delta --dark"
       '';
 
       shellAliases = {
@@ -47,27 +45,27 @@
           };
         }
       ];
+    };
 
-      zellij = {
-        enable = true;
-        settings = {
-          theme = "dracula";
-          themes.dracula.fg = [ 248 248 242 ];
-          themes.dracula.bg = [ 40 42 54 ];
-          themes.dracula.black = [ 0 0 0 ];
-          themes.dracula.gray = [ 68 71 90 ];
-          themes.dracula.red = [ 255 85 85 ];
-          themes.dracula.green = [ 80 250 123 ];
-          themes.dracula.yellow = [ 241 250 140 ];
-          themes.dracula.blue = [ 98 114 164 ];
-          themes.dracula.magenta = [ 255 121 198 ];
-          themes.dracula.cyan = [ 139 233 253 ];
-          themes.dracula.white = [ 255 255 255 ];
-          themes.dracula.orange = [ 255 184 108 ];
-          ui.pane_frames.rounded_corners = true;
-        };
+
+    zellij = {
+      enable = true;
+      settings = {
+        theme = "dracula";
+        themes.dracula.fg = [ 248 248 242 ];
+        themes.dracula.bg = [ 40 42 54 ];
+        themes.dracula.black = [ 0 0 0 ];
+        themes.dracula.gray = [ 68 71 90 ];
+        themes.dracula.red = [ 255 85 85 ];
+        themes.dracula.green = [ 80 250 123 ];
+        themes.dracula.yellow = [ 241 250 140 ];
+        themes.dracula.blue = [ 98 114 164 ];
+        themes.dracula.magenta = [ 255 121 198 ];
+        themes.dracula.cyan = [ 139 233 253 ];
+        themes.dracula.white = [ 255 255 255 ];
+        themes.dracula.orange = [ 255 184 108 ];
+        ui.pane_frames.rounded_corners = true;
       };
-
     };
 
     starship = {

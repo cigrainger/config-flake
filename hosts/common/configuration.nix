@@ -4,10 +4,7 @@
   hardware = {
     bluetooth.enable = true;
     video.hidpi.enable = true;
-    opengl = {
-      enable = true;
-      driSupport = true;
-    };
+    opengl.enable = true;
   };
 
   nix = {
@@ -16,6 +13,7 @@
       experimental-features = nix-command flakes
     '';
     settings = { trusted-users = [ "root" "chris" ]; };
+
   };
 
   nixpkgs.config = {
@@ -60,7 +58,7 @@
       home = "/home/chris";
       description = "Christopher Grainger";
       extraGroups = [ "wheel" "networkmanager" ];
-      shell = pkgs.zsh;
+      shell = pkgs.fish;
       hashedPassword =
         "$6$RkxvMra2G8J0$RDJzuC2A9gd3xybyVIqPf2WAgY.ptEmXggKd5HSC7YfXuOb84yfdlIkDKTdEgCod1.zhXFUqwitisr8./v9ZI.";
     };

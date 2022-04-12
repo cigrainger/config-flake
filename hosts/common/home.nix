@@ -5,7 +5,7 @@
     ../../home/direnv.nix
     ../../home/helix.nix
     ../../home/mail.nix
-    ../../home/shell.nix
+    ../../home/fish.nix
   ];
 
   home.stateVersion = "21.11";
@@ -16,8 +16,10 @@
     bottom
     cachix
     exercism
+    du-dust
     fd
     ffmpeg
+    fzf
     gh
     hfsprogs
     jq
@@ -34,69 +36,81 @@
     signal-cli
     ssm-session-manager-plugin
     tealdeer
+    tig
     tree
     unzip
+    which
     xclip
     xh
+    xplr
+    xsv
     yubikey-manager
   ];
 
   programs = {
-    zellij = {
+    broot.enable = true;
+    navi.enable = true;
+
+    lazygit = {
       enable = true;
       settings = {
-        theme = "dracula";
-        themes.dracula.fg = [ 248 248 242 ];
-        themes.dracula.bg = [ 40 42 54 ];
-        themes.dracula.black = [ 0 0 0 ];
-        themes.dracula.gray = [ 68 71 90 ];
-        themes.dracula.red = [ 255 85 85 ];
-        themes.dracula.green = [ 80 250 123 ];
-        themes.dracula.yellow = [ 241 250 140 ];
-        themes.dracula.blue = [ 98 114 164 ];
-        themes.dracula.magenta = [ 255 121 198 ];
-        themes.dracula.cyan = [ 139 233 253 ];
-        themes.dracula.white = [ 255 255 255 ];
-        themes.dracula.orange = [ 255 184 108 ];
-        ui.pane_frames.rounded_corners = true;
-      };
-    };
-
-    broot = {
-      enable = true;
-      enableZshIntegration = true;
-    };
-
-    nnn = {
-      enable = true;
-      package = pkgs.nnn.override { withNerdIcons = true; };
-      extraPackages = with pkgs; [ pmount udisks ];
-      plugins = {
-        mappings = {
-          c = "fzcd";
-          f = "finder";
-          v = "imgview";
-          t = "nmount";
+        customCommands = [
+          {
+            key = "b";
+            command = "tig blame -- {{.SelectedFile.Name}}";
+            context = "files";
+            description = "blame file at tree";
+            subprocess = true;
+          }
+          {
+            key = "b";
+            command = "tig blame {{.SelectedSubCommit.Sha}} -- {{.SelectedCommitFile.Name}}";
+            context = "commitFiles";
+            description = "blame file at revision";
+            subprocess = true;
+          }
+          {
+            key = "B";
+            command = "tig blame -- {{.SelectedCommitFile.Name}}";
+            context = "commitFiles";
+            description = "blame file at tree";
+            subprocess = true;
+          }
+          {
+            key = "t";
+            command = "tig -- {{.SelectedFile.Name}}";
+            context = "files";
+            description = "tig file (history of commits affecting file)";
+            subprocess = true;
+          }
+          {
+            key = "t";
+            command = "tig {{.SelectedSubCommit.Sha}} -- {{.SelectedCommitFile.Name}}";
+            context = "commitFiles";
+            description = "tig file (history of commits affecting file)";
+            subprocess = true;
+          }
+          {
+            key = "<c-r>";
+            command = "gh pr create --fill --web";
+            context = "global";
+            description = "create pull request";
+            subprocess = true;
+            loadingText = "Creating pull request on GitHub";
+          }
+        ];
+        git.paging = {
+          colorArg = "always";
+          pager = "delta --dark --paging=never";
         };
-        src = (pkgs.fetchFromGitHub {
-          owner = "jarun";
-          repo = "nnn";
-          rev = "v4.0";
-          sha256 = "sha256-Hpc8YaJeAzJoEi7aJ6DntH2VLkoR6ToP6tPYn3llR7k=";
-        }) + "/plugins";
       };
     };
 
-    navi = {
-      enable = true;
-      enableZshIntegration = true;
-    };
-
-    lazygit.enable = true;
     gpg = {
       enable = true;
       scdaemonSettings = { disable-ccid = true; };
     };
+
     password-store.enable = true;
 
     exa = {
@@ -130,16 +144,6 @@
       };
     };
 
-    fzf = {
-      enable = true;
-      enableZshIntegration = true;
-      changeDirWidgetCommand = "fd --type d";
-      changeDirWidgetOptions = [ "--preview 'tree -C {} | head -200'" ];
-      fileWidgetCommand = "fd --type f";
-      fileWidgetOptions = [ "--preview 'head {}'" ];
-      historyWidgetOptions = [ "--sort" "--exact" ];
-    };
-
     bat = {
       enable = true;
       config = { theme = "Dracula"; };
@@ -153,6 +157,8 @@
           } + "/Dracula.tmTheme");
       };
     };
+
+    zoxide.enable = true;
   };
 
   services = {

@@ -3,6 +3,8 @@
 {
   imports = [ ..common/configuration.nix ./hardware-configuration.nix ];
 
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   hardware.nvidia.modesetting.enable = true;
 
   networking.hostName = "athos";

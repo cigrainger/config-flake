@@ -7,24 +7,17 @@
     clippy
     codespell
     elixir_ls
-    fd
-    fzf
-    gcc
-    gh
-    luajitPackages.luacheck
+    lldb
     mdl
     nixfmt
     nodePackages.bash-language-server
     nodePackages.eslint_d
     nodePackages.fixjson
-    # nodePackages.lua-fmt
     nodePackages.prettier
     nodePackages.pyright
     nodePackages.typescript-language-server
     nodePackages.vscode-json-languageserver
     nodePackages.yaml-language-server
-    nodejs
-    ripgrep
     rnix-lsp
     rust-analyzer
     rustfmt
@@ -35,21 +28,24 @@
     shellharden
     shfmt
     statix
-    stylua
-    sumneko-lua-language-server
-    terraform
-    tree-sitter
-    xclip
     zls
   ];
 
   programs = {
     helix = {
       enable = true;
-      settings = { theme = "dracula"; };
+      settings = {
+        theme = "dracula";
+        editor.cursor-shape = {
+          insert = "bar";
+          normal = "block";
+          select = "underline";
+        };
+      };
       languages = [
         { auto-format = true; name = "elixir"; }
         { auto-format = true; name = "nix"; }
+        { auto-format = true; name = "r"; }
       ];
     };
   };
