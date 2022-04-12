@@ -3,6 +3,8 @@
 {
   imports = [ ..common/configuration.nix ./hardware-configuration.nix ];
 
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   hardware.nvidia.modesetting.enable = true;
 
   networking.hostName = "athos";
@@ -26,6 +28,8 @@
   };
 
   virtualisation.podman.enableNvidia = true;
+
+  home-manager.users.chris = ./home.nix;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

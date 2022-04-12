@@ -4,10 +4,7 @@
   hardware = {
     bluetooth.enable = true;
     video.hidpi.enable = true;
-    opengl = {
-      enable = true;
-      driSupport = true;
-    };
+    opengl.enable = true;
   };
 
   nix = {
@@ -16,6 +13,7 @@
       experimental-features = nix-command flakes
     '';
     settings = { trusted-users = [ "root" "chris" ]; };
+
   };
 
   nixpkgs.config = {
@@ -60,7 +58,7 @@
       home = "/home/chris";
       description = "Christopher Grainger";
       extraGroups = [ "wheel" "networkmanager" ];
-      shell = pkgs.zsh;
+      shell = pkgs.fish;
       hashedPassword =
         "$6$RkxvMra2G8J0$RDJzuC2A9gd3xybyVIqPf2WAgY.ptEmXggKd5HSC7YfXuOb84yfdlIkDKTdEgCod1.zhXFUqwitisr8./v9ZI.";
     };
@@ -70,7 +68,7 @@
     etc."elixir-ls/language_server.sh".source =
       "${pkgs.elixir_ls}/lib/language_server.sh";
 
-    systemPackages = with pkgs; [ neovim git ];
+    systemPackages = with pkgs; [ helix git ];
   };
 
   fonts.fonts = with pkgs; [
@@ -97,17 +95,6 @@
     };
 
     redis.servers = { "" = { enable = true; }; };
-
-    printing = {
-      enable = true;
-      drivers = with pkgs; [
-        gutenprint
-        gutenprintBin
-        brlaser
-        brgenml1lpr
-        brgenml1cupswrapper
-      ];
-    };
 
     pcscd.enable = true;
     udev.packages = [ pkgs.yubikey-personalization ];
@@ -137,6 +124,5 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    users.chris = ../../home.nix;
   };
 }

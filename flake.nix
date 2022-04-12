@@ -1,14 +1,19 @@
 {
   inputs = {
+
     nixpkgs.url = "nixpkgs/nixos-unstable";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nur.url = "github:nix-community/NUR";
+    helix = {
+      url = "github:helix-editor/helix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nur, ... }:
+  outputs = { self, nixpkgs, home-manager, nur, helix, ... }:
     let
       pkgs = import nixpkgs {
         system = "x86_64-linux";
@@ -17,14 +22,12 @@
           permittedInsecurePackages = [ "electron-9.4.4" ];
         };
         overlays = [
-          (_: _: {
-            cider = pkgs.callPackage ./pkgs/cider.nix { };
-            zotero = pkgs.callPackage ./pkgs/zotero/default.nix { };
-          })
+          (_: _: { helix = helix.packages.x86_64-linux.helix; })
           nur.overlay
         ];
       };
-    in {
+    in
+    {
       nixosConfigurations.athos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
