@@ -6,6 +6,7 @@
     ../../home/helix.nix
     ../../home/mail.nix
     ../../home/fish.nix
+    ../../home/neovim.nix
   ];
 
   home.stateVersion = "21.11";
